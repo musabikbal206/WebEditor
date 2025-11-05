@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Live Code Sandbox</title>
+    <title>Sandbox</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -65,6 +65,11 @@
             width: 12px;
             box-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
         }
+        
+        /* Ensure resizer is hidden when only one panel is visible */
+        .w-0 {
+            display: none !important;
+        }
 
         /* Enhanced line numbers styling */
         .line-numbers {
@@ -116,6 +121,17 @@
             transform: translateY(-2px);
         }
         
+        /* Toggle buttons specific style */
+        .btn-toggle {
+            @apply px-3 py-1.5 text-sm font-medium rounded-xl smooth-transition border;
+        }
+        .btn-toggle-active {
+            @apply bg-accent-500 text-white border-accent-600 shadow-md;
+        }
+        .btn-toggle-inactive {
+            @apply bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200;
+        }
+        
         /* Glass morphism effect for header */
         .glass-header {
             background: rgba(255, 255, 255, 0.85);
@@ -159,17 +175,33 @@
             <svg class="inline w-7 h-7 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
             </svg>
-            CodeSandbox
+            Sandbox
         </h1>
         <div class="flex items-center space-x-4">
-            <div class="hidden sm:flex items-center bg-accent-100 text-accent-700 px-3 py-1 rounded-full text-sm font-medium">
-                <span class="w-2 h-2 bg-accent-500 rounded-full mr-2 animate-pulse"></span>
-                Live Preview
-            </div>
+            
+            <!-- New Toggle Buttons -->
+            <button
+                id="toggle-editor-btn"
+                onclick="togglePanel('preview')"
+                class="btn-toggle btn-toggle-active"
+                title="Toggle Editor Visibility"
+            >
+                Hide Live Preview
+            </button>
+            <button
+                id="toggle-preview-btn"
+                onclick="togglePanel('editor')"
+                class="btn-toggle btn-toggle-active"
+                title="Toggle Live Preview Visibility"
+            >
+                Hide Editor
+            </button>
+            <!-- End New Toggle Buttons -->
+            
             <button
                 id="export-button"
                 onclick="downloadDocument()"
-                class="px-5 py-2.5 btn-primary text-white text-sm font-semibold rounded-xl smooth-transition pulse-effect flex items-center"
+                class="hidden sm:flex px-5 py-2.5 btn-primary text-white text-sm font-semibold rounded-xl smooth-transition pulse-effect items-center"
             >
                 <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -182,7 +214,7 @@
     <!-- Enhanced Main Editor Area -->
     <main class="h-screen-minus-header flex flex-col md:flex-row">
         <!-- Enhanced Code Editor Panel (Dark Mode) -->
-        <div id="editor-panel" class="relative w-1/2 p-4 bg-gradient-to-br from-dark-bg to-slate-900 border-r border-slate-700 overflow-hidden">
+        <div id="editor-panel" class="relative w-1/2 p-4 bg-gradient-to-br from-dark-bg to-slate-900 border-r border-slate-700 overflow-hidden smooth-transition">
             <div class="flex justify-between items-center mb-3">
                 <h2 class="text-lg font-semibold text-accent-300 flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -239,10 +271,10 @@
         </div>
 
         <!-- Enhanced Resizer -->
-        <div id="resizer" class="resizer"></div>
+        <div id="resizer" class="resizer smooth-transition"></div>
 
         <!-- Enhanced Live Preview Panel -->
-        <div id="preview-panel" class="relative w-1/2 p-0 bg-gradient-to-br from-slate-50 to-slate-100 shadow-inner overflow-hidden">
+        <div id="preview-panel" class="relative w-1/2 p-0 bg-gradient-to-br from-slate-50 to-slate-100 shadow-inner overflow-hidden smooth-transition">
             <div class="flex justify-between items-center p-4 border-b border-slate-200">
                 <h2 class="text-lg font-semibold text-slate-700 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -291,12 +323,22 @@
         const modalContent = document.getElementById('modal-content');
         const modalText = document.getElementById('modal-text');
         const lineCount = document.getElementById('line-count');
+        
+        // New elements for toggling
+        const toggleEditorBtn = document.getElementById('toggle-editor-btn');
+        const togglePreviewBtn = document.getElementById('toggle-preview-btn');
+
+        // Initial state
+        let isEditorVisible = true;
+        let isPreviewVisible = true;
 
         /**
          * Writes the content of the textarea directly into the iframe's document,
          * ensuring a real-time update of the website structure.
          */
         function updatePreview() {
+            if (!isPreviewVisible) return; // Don't update if hidden
+            
             const code = codeEditor.value;
             const iframeDoc = previewFrame.contentWindow.document;
 
@@ -329,6 +371,88 @@
             updatePreview();
             updateLineNumbers();
         };
+
+        // --- New Panel Toggle Logic ---
+        /**
+         * Toggles the visibility of either the 'editor' or 'preview' panel.
+         * Ensures at least one panel is always visible.
+         * @param {'editor' | 'preview'} panelName - The panel to toggle.
+         */
+        function togglePanel(panelName) {
+            if (panelName === 'editor') {
+                // If trying to hide editor, ensure preview is visible
+                if (isEditorVisible && !isPreviewVisible) return; 
+                isEditorVisible = !isEditorVisible;
+            } else if (panelName === 'preview') {
+                // If trying to hide preview, ensure editor is visible
+                if (isPreviewVisible && !isEditorVisible) return;
+                isPreviewVisible = !isPreviewVisible;
+            }
+
+            // Update classes and visibility
+            updatePanelLayout();
+        }
+        
+        /**
+         * Applies the correct width and button classes based on the current visibility state.
+         */
+        function updatePanelLayout() {
+            const editorClasses = ['w-0', 'p-0', 'border-r-0']; // Classes to hide editor content
+            const previewClasses = ['w-0', 'p-0', 'border-l-0']; // Classes to hide preview content
+            const activeClass = 'btn-toggle-active';
+            const inactiveClass = 'btn-toggle-inactive';
+
+            // Reset widths to ensure dynamic adjustment
+            editorPanel.style.width = '';
+            previewPanel.style.width = '';
+            
+            // Toggle Editor
+            if (isEditorVisible) {
+                editorPanel.classList.remove(...editorClasses);
+                toggleEditorBtn.classList.add(activeClass);
+                toggleEditorBtn.classList.remove(inactiveClass);
+            } else {
+                editorPanel.classList.add(...editorClasses);
+                toggleEditorBtn.classList.remove(activeClass);
+                toggleEditorBtn.classList.add(inactiveClass);
+            }
+
+            // Toggle Preview
+            if (isPreviewVisible) {
+                previewPanel.classList.remove(...previewClasses);
+                togglePreviewBtn.classList.add(activeClass);
+                togglePreviewBtn.classList.remove(inactiveClass);
+            } else {
+                previewPanel.classList.add(...previewClasses);
+                togglePreviewBtn.classList.remove(activeClass);
+                togglePreviewBtn.classList.add(inactiveClass);
+                // Immediately stop preview updates if hidden
+                if (timeout) clearTimeout(timeout);
+            }
+            
+            // Adjust widths based on combined visibility
+            if (isEditorVisible && isPreviewVisible) {
+                // Default split view
+                editorPanel.classList.remove('w-full');
+                previewPanel.classList.remove('w-full');
+                editorPanel.classList.add('w-1/2');
+                previewPanel.classList.add('w-1/2');
+                resizer.style.display = 'block';
+            } else if (isEditorVisible && !isPreviewVisible) {
+                // Editor full screen
+                editorPanel.classList.add('w-full');
+                previewPanel.classList.remove('w-1/2');
+                resizer.style.display = 'none';
+            } else if (!isEditorVisible && isPreviewVisible) {
+                // Preview full screen
+                previewPanel.classList.add('w-full');
+                editorPanel.classList.remove('w-1/2');
+                resizer.style.display = 'none';
+                updatePreview(); // Trigger an update for fresh content
+            }
+        }
+        // --- End New Panel Toggle Logic ---
+
 
         // --- Enhanced Line Numbers Logic ---
         function updateLineNumbers() {
@@ -384,6 +508,9 @@
         let animationFrameId = null;
 
         function startResize(e) {
+            // Prevent resize if either panel is hidden
+            if (!isEditorVisible || !isPreviewVisible) return;
+            
             isResizing = true;
             resizer.classList.add('resizing');
             document.body.style.cursor = 'col-resize';
