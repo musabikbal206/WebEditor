@@ -199,7 +199,8 @@
                     class="btn-toggle-icon btn-toggle-active"
                     title="Switch to Code Editor"
                 >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    <!-- Added smooth-transition class to SVG -->
+                    <svg class="w-5 h-5 smooth-transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                 </button>
                 <button
                     id="mobile-preview-view-btn"
@@ -207,7 +208,8 @@
                     class="btn-toggle-icon btn-toggle-inactive"
                     title="Switch to Live Preview"
                 >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    <!-- Added smooth-transition class to SVG -->
+                    <svg class="w-5 h-5 smooth-transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                 </button>
             </div>
             
@@ -220,7 +222,8 @@
                     class="btn-toggle-icon btn-toggle-active"
                     title="Show Editor Only"
                 >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    <!-- Added smooth-transition class to SVG -->
+                    <svg class="w-5 h-5 smooth-transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                 </button>
                 <!-- Show Both (Split View) -->
                 <button
@@ -229,7 +232,8 @@
                     class="btn-toggle-icon btn-toggle-inactive"
                     title="Show Editor and Preview Split"
                 >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Added smooth-transition class to SVG -->
+                    <svg class="w-5 h-5 smooth-transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                     </svg>
                 </button>
@@ -240,7 +244,8 @@
                     class="btn-toggle-icon btn-toggle-inactive"
                     title="Show Live Preview Only"
                 >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    <!-- Added smooth-transition class to SVG -->
+                    <svg class="w-5 h-5 smooth-transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                 </button>
             </div>
             <!-- End Desktop View Controls -->
@@ -693,13 +698,14 @@
         
         // --- Initialization and Global Event Handlers ---
         window.onload = function() {
-            // Set initial state for mobile buttons
-            mobileEditorBtn.classList.add('btn-toggle-active');
-            mobileEditorBtn.classList.remove('btn-toggle-inactive');
-            mobilePreviewBtn.classList.remove('btn-toggle-active');
-            mobilePreviewBtn.classList.add('btn-toggle-inactive');
+            // Determine default view on load
+            if (!isDesktop()) {
+                currentView = 'editor'; // Default to editor on mobile
+            } else {
+                currentView = 'both'; // Default to split on desktop
+            }
             
-            updatePanelLayout(); // Determine initial layout based on screen size
+            updatePanelLayout(); // Apply the layout and button states
             updatePreview();
             updateLineNumbers();
         };
@@ -707,11 +713,11 @@
         // Handle screen resize to switch between mobile and desktop layout modes
         window.addEventListener('resize', () => {
              // Reset to 'both' view when switching from mobile to desktop wide screen
-            if (isDesktop() && !isResizing && currentView !== 'both') {
+            if (isDesktop() && !isResizing && (currentView === 'editor' || currentView === 'preview')) {
                 currentView = 'both';
             }
             // Reset to 'editor' view when switching from desktop to mobile narrow screen
-            if (!isDesktop() && currentView !== 'editor' && currentView !== 'preview') {
+            if (!isDesktop() && currentView === 'both') {
                 currentView = 'editor';
             }
             updatePanelLayout();
