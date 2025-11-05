@@ -130,15 +130,18 @@
             transform: translateY(-2px);
         }
         
-        /* Toggle buttons specific style (Desktop Only) */
-        .btn-toggle {
-            @apply px-3 py-1.5 text-sm font-medium rounded-xl smooth-transition border;
+        /* General toggle style */
+        .btn-toggle-icon {
+            /* Increased padding and rounded corners for a softer, wider look */
+            @apply px-4 py-2 text-sm font-medium rounded-lg smooth-transition border shadow-sm;
         }
         .btn-toggle-active {
-            @apply bg-accent-500 text-white border-accent-600 shadow-md;
+            /* More stylish active state */
+            @apply bg-accent-500 text-white border-accent-600 shadow-lg hover:bg-accent-600 transform hover:scale-105;
         }
         .btn-toggle-inactive {
-            @apply bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200;
+            /* Stylish inactive state with a subtle shadow/light color */
+            @apply bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:shadow-md;
         }
         
         /* Glass morphism effect for header */
@@ -186,14 +189,14 @@
             </svg>
             Sandbox
         </h1>
-        <div class="flex items-center space-x-2 md:space-x-4">
+        <div class="flex items-center space-x-3 md:space-x-4">
             
-            <!-- Mobile/Tablet View Switcher -->
-            <div id="mobile-view-switch" class="flex md:hidden rounded-xl bg-slate-200 p-0.5 shadow-inner">
+            <!-- Mobile/Tablet View Switcher (Visible only on mobile) -->
+            <div id="mobile-view-switch" class="flex md:hidden rounded-xl bg-slate-100 p-1 shadow-md space-x-2">
                 <button
                     id="mobile-editor-view-btn"
                     onclick="setMobileView('editor')"
-                    class="px-3 py-1.5 text-sm font-medium rounded-xl smooth-transition bg-accent-500 text-white shadow-md"
+                    class="btn-toggle-icon btn-toggle-active"
                     title="Switch to Code Editor"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
@@ -201,31 +204,46 @@
                 <button
                     id="mobile-preview-view-btn"
                     onclick="setMobileView('preview')"
-                    class="px-3 py-1.5 text-sm font-medium rounded-xl smooth-transition text-slate-700 hover:bg-slate-300"
+                    class="btn-toggle-icon btn-toggle-inactive"
                     title="Switch to Live Preview"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                 </button>
             </div>
             
-            <!-- Desktop Toggle Buttons (Hidden on mobile) -->
-            <button
-                id="toggle-editor-btn"
-                onclick="togglePanel('preview')"
-                class="hidden md:inline-flex btn-toggle btn-toggle-active"
-                title="Toggle Editor Visibility"
-            >
-                Hide Live Preview
-            </button>
-            <button
-                id="toggle-preview-btn"
-                onclick="togglePanel('editor')"
-                class="hidden md:inline-flex btn-toggle btn-toggle-active"
-                title="Toggle Live Preview Visibility"
-            >
-                Hide Editor
-            </button>
-            <!-- End Desktop Toggle Buttons -->
+            <!-- Desktop View Controls (Icon only, hidden on mobile) -->
+            <div id="desktop-view-controls" class="hidden md:flex rounded-xl bg-slate-100 p-1 shadow-md space-x-2">
+                 <!-- Show Editor Only -->
+                <button
+                    id="show-editor-only-btn"
+                    onclick="showOnly('editor')"
+                    class="btn-toggle-icon btn-toggle-active"
+                    title="Show Editor Only"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                </button>
+                <!-- Show Both (Split View) -->
+                <button
+                    id="show-both-btn"
+                    onclick="showOnly('both')"
+                    class="btn-toggle-icon btn-toggle-inactive"
+                    title="Show Editor and Preview Split"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    </svg>
+                </button>
+                <!-- Show Preview Only -->
+                <button
+                    id="show-preview-only-btn"
+                    onclick="showOnly('preview')"
+                    class="btn-toggle-icon btn-toggle-inactive"
+                    title="Show Live Preview Only"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                </button>
+            </div>
+            <!-- End Desktop View Controls -->
             
             <!-- EXPORT BUTTON - Now Responsive -->
             <button
@@ -356,9 +374,10 @@
         const modalText = document.getElementById('modal-text');
         const lineCount = document.getElementById('line-count');
         
-        // New elements for toggling (Desktop Only)
-        const toggleEditorBtn = document.getElementById('toggle-editor-btn');
-        const togglePreviewBtn = document.getElementById('toggle-preview-btn');
+        // Desktop Toggle Controls
+        const showEditorOnlyBtn = document.getElementById('show-editor-only-btn');
+        const showBothBtn = document.getElementById('show-both-btn');
+        const showPreviewOnlyBtn = document.getElementById('show-preview-only-btn');
         
         // New elements for Mobile Switching
         const mobileEditorBtn = document.getElementById('mobile-editor-view-btn');
@@ -369,6 +388,7 @@
         let isEditorVisible = true;
         let isPreviewVisible = true;
         let isResizing = false;
+        let currentView = 'both'; // 'editor', 'preview', or 'both'
 
         // Media query to detect desktop size (md breakpoint is 768px in Tailwind)
         const isDesktop = () => window.matchMedia('(min-width: 768px)').matches;
@@ -378,9 +398,8 @@
          * Writes the content of the textarea directly into the iframe's document.
          */
         function updatePreview() {
-            // Check if preview is visible and if we are not on desktop and the editor is visible (mobile editor view)
-            const shouldUpdate = isPreviewVisible || !isDesktop(); 
-            if (!shouldUpdate) return;
+            // Only update preview if it is visible or we are forced to re-render (e.g., changing views)
+            if (!isPreviewVisible && isDesktop()) return;
             
             const code = codeEditor.value;
             const iframeDoc = previewFrame.contentWindow.document;
@@ -411,11 +430,12 @@
 
 
         // --- New Panel Toggle Logic (Responsive) ---
+        
         /**
-         * Sets the active view on mobile devices.
+         * Sets the active view on mobile devices (Show Only).
          * @param {'editor' | 'preview'} viewName - The view to make active.
          */
-        function setMobileView(viewName) {
+        window.setMobileView = function(viewName) {
             if (viewName === 'editor') {
                 isEditorVisible = true;
                 isPreviewVisible = false;
@@ -423,38 +443,31 @@
                 isEditorVisible = false;
                 isPreviewVisible = true;
             }
+            currentView = viewName;
             updatePanelLayout();
         }
-        
+
         /**
-         * Toggles the visibility of either the 'editor' or 'preview' panel.
-         * For mobile, this is repurposed to switch the view.
-         * @param {'editor' | 'preview'} panelToToggle - The panel associated with the button (e.g., 'preview' button hides preview).
+         * Sets the active view on desktop devices (Show Only or Split).
+         * @param {'editor' | 'preview' | 'both'} panelName - The view mode to switch to.
          */
-        window.togglePanel = function(panelToToggle) {
-            if (isDesktop()) {
-                // Desktop Split Logic
-                if (panelToToggle === 'editor') {
-                    // If trying to hide editor, ensure preview is visible
-                    if (isEditorVisible && !isPreviewVisible) return;
-                    isEditorVisible = !isEditorVisible;
-                } else if (panelToToggle === 'preview') {
-                    // If trying to hide preview, ensure editor is visible
-                    if (isPreviewVisible && !isEditorVisible) return;
-                    isPreviewVisible = !isPreviewVisible;
-                }
-            } else {
-                // Mobile Single View Logic - Desktop toggles become view switches
-                if (panelToToggle === 'editor') {
-                    // Toggling editor visibility usually means we want to see preview
-                    setMobileView('preview');
-                } else if (panelToToggle === 'preview') {
-                    // Toggling preview visibility usually means we want to see editor
-                    setMobileView('editor');
-                }
+        window.showOnly = function(panelName) {
+            if (!isDesktop()) return; 
+
+            if (panelName === 'editor') {
+                isEditorVisible = true;
+                isPreviewVisible = false;
+            } else if (panelName === 'preview') {
+                isEditorVisible = false;
+                isPreviewVisible = true;
+            } else if (panelName === 'both') {
+                isEditorVisible = true;
+                isPreviewVisible = true;
             }
+            currentView = panelName;
             updatePanelLayout();
         }
+
 
         /**
          * Applies the correct width and button classes based on the current visibility state and screen size.
@@ -463,67 +476,73 @@
             const isDesk = isDesktop();
             
             // --- Reset All Layout Styles ---
-            const resetClasses = ['w-0', 'p-0', 'border-r-0', 'w-full', 'md:w-1/2'];
+            const resetClasses = ['w-0', 'p-0', 'border-r-0', 'w-full', 'md:w-1/2', 'hidden', 'block'];
             editorPanel.classList.remove(...resetClasses);
             previewPanel.classList.remove(...resetClasses);
             editorPanel.style.width = '';
             previewPanel.style.width = '';
+            
+            // Function to set button state (generic)
+            const setBtnState = (btn, isActive) => {
+                if (isActive) {
+                    btn.classList.add('btn-toggle-active');
+                    btn.classList.remove('btn-toggle-inactive');
+                } else {
+                    btn.classList.remove('btn-toggle-active');
+                    btn.classList.add('btn-toggle-inactive');
+                }
+            };
 
-            // --- Desktop Logic (Split View) ---
+            // --- Desktop Logic (Three-Way Split/Maximized View) ---
             if (isDesk) {
-                // Show desktop buttons, hide mobile switch
-                toggleEditorBtn.classList.remove('hidden');
-                togglePreviewBtn.classList.remove('hidden');
+                // Show desktop controls, hide mobile switch
                 mobileSwitchContainer.classList.add('hidden');
+                document.getElementById('desktop-view-controls').classList.remove('hidden');
+
+                // Determine visibility based on currentView state
+                isEditorVisible = (currentView === 'editor' || currentView === 'both');
+                isPreviewVisible = (currentView === 'preview' || currentView === 'both');
+
+                // Update Button States
+                setBtnState(showEditorOnlyBtn, currentView === 'editor');
+                setBtnState(showBothBtn, currentView === 'both');
+                setBtnState(showPreviewOnlyBtn, currentView === 'preview');
                 
-                // Re-enable resizer display if both are visible
-                resizer.style.display = (isEditorVisible && isPreviewVisible) ? 'block' : 'none';
-                
-                // Apply desktop visibility
+                // Set Panel Display and Width
                 if (isEditorVisible) {
                     editorPanel.style.display = 'block';
                     editorPanel.classList.add(isPreviewVisible ? 'md:w-1/2' : 'w-full');
-                    toggleEditorBtn.classList.add('btn-toggle-active');
-                    toggleEditorBtn.classList.remove('btn-toggle-inactive');
                 } else {
                     editorPanel.style.display = 'none';
-                    toggleEditorBtn.classList.remove('btn-toggle-active');
-                    toggleEditorBtn.classList.add('btn-toggle-inactive');
                 }
 
                 if (isPreviewVisible) {
                     previewPanel.style.display = 'block';
                     previewPanel.classList.add(isEditorVisible ? 'md:w-1/2' : 'w-full');
-                    togglePreviewBtn.classList.add('btn-toggle-active');
-                    togglePreviewBtn.classList.remove('btn-toggle-inactive');
-                    if (isEditorVisible && !isResizing) {
-                        // Ensure default 50/50 split if both are visible
-                        editorPanel.style.width = '50%';
-                        previewPanel.style.width = '50%';
-                    }
                 } else {
                     previewPanel.style.display = 'none';
-                    togglePreviewBtn.classList.remove('btn-toggle-active');
-                    togglePreviewBtn.classList.add('btn-toggle-inactive');
                 }
+
+                // Resizer visibility
+                resizer.style.display = (currentView === 'both') ? 'block' : 'none';
                 
             } 
-            // --- Mobile Logic (Single View) ---
+            // --- Mobile Logic (Dual View Switch) ---
             else {
-                // Hide desktop buttons, show mobile switch
-                toggleEditorBtn.classList.add('hidden');
-                togglePreviewBtn.classList.add('hidden');
+                // Hide desktop controls, show mobile switch
                 mobileSwitchContainer.classList.remove('hidden'); 
-                resizer.style.display = 'none'; // Ensure resizer is gone
+                document.getElementById('desktop-view-controls').classList.add('hidden');
+                resizer.style.display = 'none';
 
                 // Mobile panels should be full-screen, so one is visible, one is hidden.
-                if (isEditorVisible || !isPreviewVisible) { // Default to editor if state is weird
-                    isEditorVisible = true;
-                    isPreviewVisible = false;
-                } else {
-                    isEditorVisible = false;
-                    isPreviewVisible = true;
+                // Revert isEditorVisible/isPreviewVisible back to mobile view state if it was desktop
+                if (currentView === 'both') {
+                    currentView = 'editor'; // Default mobile view to editor
                 }
+                
+                // Update visibility states based on mobile view
+                isEditorVisible = (currentView === 'editor');
+                isPreviewVisible = (currentView === 'preview');
 
                 // Apply mobile visibility
                 if (isEditorVisible) {
@@ -531,20 +550,16 @@
                     previewPanel.style.display = 'none';
                     
                     // Update mobile switch styling
-                    mobileEditorBtn.classList.add('bg-accent-500', 'text-white', 'shadow-md');
-                    mobileEditorBtn.classList.remove('text-slate-700', 'hover:bg-slate-300');
-                    mobilePreviewBtn.classList.remove('bg-accent-500', 'text-white', 'shadow-md');
-                    mobilePreviewBtn.classList.add('text-slate-700', 'hover:bg-slate-300');
-                } else {
+                    setBtnState(mobileEditorBtn, true);
+                    setBtnState(mobilePreviewBtn, false);
+                } else { // currentView === 'preview'
                     editorPanel.style.display = 'none';
                     previewPanel.style.display = 'block';
                     updatePreview(); // Update preview when switching to it
                     
                     // Update mobile switch styling
-                    mobilePreviewBtn.classList.add('bg-accent-500', 'text-white', 'shadow-md');
-                    mobilePreviewBtn.classList.remove('text-slate-700', 'hover:bg-slate-300');
-                    mobileEditorBtn.classList.remove('bg-accent-500', 'text-white', 'shadow-md');
-                    mobileEditorBtn.classList.add('text-slate-700', 'hover:bg-slate-300');
+                    setBtnState(mobilePreviewBtn, true);
+                    setBtnState(mobileEditorBtn, false);
                 }
             }
         }
@@ -602,7 +617,8 @@
         let animationFrameId = null;
 
         function startResize(e) {
-            if (!isDesktop() || !isEditorVisible || !isPreviewVisible) return;
+            // Only allow resize in 'both' view mode on desktop
+            if (!isDesktop() || currentView !== 'both') return;
             
             isResizing = true;
             resizer.classList.add('resizing');
@@ -677,13 +693,29 @@
         
         // --- Initialization and Global Event Handlers ---
         window.onload = function() {
+            // Set initial state for mobile buttons
+            mobileEditorBtn.classList.add('btn-toggle-active');
+            mobileEditorBtn.classList.remove('btn-toggle-inactive');
+            mobilePreviewBtn.classList.remove('btn-toggle-active');
+            mobilePreviewBtn.classList.add('btn-toggle-inactive');
+            
             updatePanelLayout(); // Determine initial layout based on screen size
             updatePreview();
             updateLineNumbers();
         };
 
         // Handle screen resize to switch between mobile and desktop layout modes
-        window.addEventListener('resize', updatePanelLayout);
+        window.addEventListener('resize', () => {
+             // Reset to 'both' view when switching from mobile to desktop wide screen
+            if (isDesktop() && !isResizing && currentView !== 'both') {
+                currentView = 'both';
+            }
+            // Reset to 'editor' view when switching from desktop to mobile narrow screen
+            if (!isDesktop() && currentView !== 'editor' && currentView !== 'preview') {
+                currentView = 'editor';
+            }
+            updatePanelLayout();
+        });
     </script>
 
 </body>
