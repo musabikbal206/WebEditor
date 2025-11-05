@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Code Sandbox</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        /* Set font to Inter for clean look */
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Ensure the main container takes full viewport height */
+        .h-screen-minus-header {
+            height: calc(100vh - 4rem); /* Subtract header height */
+        }
+        
+        /* Custom scrollbar for aesthetics */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background-color: #6366f1;
+            border-radius: 10px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+        
+        /* Resizer styles */
+        .resizer {
+            width: 8px;
+            background: linear-gradient(to right, #8b5cf6, #6366f1);
+            cursor: col-resize;
+            transition: all 0.2s;
+        }
+        .resizer:hover, .resizer.resizing {
+            background: linear-gradient(to right, #7c3aed, #4f46e5);
+            width: 12px;
+        }
+        
+        /* Line numbers styling */
+        .line-numbers {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            background-color: #1f2937;
+            color: #9ca3af;
+            text-align: right;
+            padding: 1rem 0.5rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            overflow: hidden;
+            border-right: 1px solid #374151;
+            user-select: none;
+        }
+        
+        .editor-wrapper {
+            position: relative;
+            height: 100%;
+        }
+        
+        .editor-textarea {
+            padding-left: 50px !important;
+        }
+        
+        /* Modern button styles */
+        .modern-btn {
+            background: linear-gradient(to right, #8b5cf6, #6366f1);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2), 0 2px 4px -1px rgba(99, 102, 241, 0.06);
+        }
+        
+        .modern-btn:hover {
+            background: linear-gradient(to right, #7c3aed, #4f46e5);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        /* Glass effect for header */
+        .glass-header {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Modern panel styling */
+        .modern-panel {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Preview panel styling */
+        .preview-panel {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-purple-100">
+
+    <!-- Header -->
+    <header class="h-16 glass-header flex items-center justify-between px-4 md:px-8">
+        <div class="flex items-center">
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <svg class="inline w-6 h-6 mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+                Modern Sandbox
+            </h1>
+            <p class="ml-4 text-gray-600 hidden sm:block text-sm">Edit HTML, CSS & JS in real-time</p>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <button id="export-btn" class="modern-btn px-4 py-2 text-white rounded-lg flex items-center">
+                <i data-feather="download" class="w-4 h-4 mr-2"></i>
+                Export
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Editor Area -->
+    <main class="h-screen-minus-header flex flex-col md:flex-row">
+        <!-- Code Editor Panel -->
+        <div id="editor-panel" class="relative w-1/2 p-4 modern-panel border-r border-gray-700 overflow-hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-indigo-300 flex items-center">
+                    <i data-feather="code" class="w-5 h-5 mr-2"></i>
+                    Editor
+                </h2>
+                <div class="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
+                    HTML/CSS/JS
+                </div>
+            </div>
+            <div class="editor-wrapper">
+                <div id="line-numbers" class="line-numbers">1</div>
+                <textarea
+                    id="code-editor"
+                    class="editor-textarea w-full h-full p-4 text-sm text-gray-200 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none transition duration-150 ease-in-out"
+                    placeholder="Start typing your HTML, CSS (in <style> tags), and JavaScript (in <script> tags) here..."
+                >
+<!-- Start editing your website here! -->
+<div class="p-8 bg-white rounded-xl shadow-2xl max-w-sm mx-auto my-4 text-center">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">My First Website</h1>
+    <p class="text-indigo-600">Live preview generated below!</p>
+    <button onclick="alert('Button clicked!')" class="mt-4 px-6 py-2 bg-indigo-500 text-white font-medium rounded-full hover:bg-indigo-700 transition duration-150">
+        Click Me
+    </button>
+</div>
+
+<style>
+    /* Add CSS styles here */
+    body {
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+</style>
+
+<script>
+    // Add JavaScript here
+    function alert(message) {
+        // Using console.log instead of the blocked alert()
+        console.log("Custom alert message:", message);
+    }
+</script>
+                </textarea>
+            </div>
+        </div>
+
+        <!-- Resizer -->
+        <div id="resizer" class="resizer"></div>
+
+        <!-- Live Preview Panel -->
+        <div id="preview-panel" class="relative w-1/2 p-0 preview-panel shadow-inner overflow-hidden">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h2 class="text-lg font-semibold text-gray-700 flex items-center">
+                    <i data-feather="eye" class="w-5 h-5 mr-2"></i>
+                    Live Preview
+                </h2>
+                <div class="text-xs text-gray-500 bg-white px-2 py-1 rounded shadow-sm">
+                    Updates in real-time
+                </div>
+            </div>
+            <iframe
+                id="preview-frame"
+                class="w-full h-full border-0 bg-white"
+                title="Live Code Preview"
+            ></iframe>
+        </div>
+    </main>
+
+    <script type="text/javascript">
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // --- Core Application Logic ---
+        const codeEditor = document.getElementById('code-editor');
+        const previewFrame = document.getElementById('preview-frame');
+        const resizer = document.getElementById('resizer');
+        const editorPanel = document.getElementById('editor-panel');
+        const previewPanel = document.getElementById('preview-panel');
+        const lineNumbers = document.getElementById('line-numbers');
+        const exportBtn = document.getElementById('export-btn');
+
+        /**
+         * Writes the content of the textarea directly into the iframe's document,
+         * ensuring a real-time update of the website structure.
+         */
+        function updatePreview() {
+            const code = codeEditor.value;
+            const iframeDoc = previewFrame.contentWindow.document;
+
+            // Using document.write to fully replace the iframe's content
+            iframeDoc.open();
+            iframeDoc.write(code);
+            iframeDoc.close();
+        }
+
+        // --- Debouncing for Performance ---
+        let timeout = null;
+        const DEBOUNCE_DELAY = 150; // milliseconds
+
+        /**
+         * Debounced event handler for real-time updates.
+         */
+        function handleInput() {
+            clearTimeout(timeout);
+            timeout = setTimeout(updatePreview, DEBOUNCE_DELAY);
+            updateLineNumbers();
+        }
+
+        // Attach the debounced handler to the input event for live typing updates
+        codeEditor.addEventListener('input', handleInput);
+
+        // Run the update once on load to show the initial content
+        window.onload = function() {
+            updatePreview();
+            updateLineNumbers();
+        };
+
+        // --- Line Numbers Logic ---
+        function updateLineNumbers() {
+            const lines = codeEditor.value.split('\n').length;
+            let lineNumbersHTML = '';
+            
+            for (let i = 1; i <= lines; i++) {
+                lineNumbersHTML += i + '<br>';
+            }
+            
+            lineNumbers.innerHTML = lineNumbersHTML;
+            
+            // Sync scroll position
+            lineNumbers.scrollTop = codeEditor.scrollTop;
+        }
+
+        // Sync scrolling of textarea and line numbers
+        codeEditor.addEventListener('scroll', function() {
+            lineNumbers.scrollTop = codeEditor.scrollTop;
+        });
+
+        // Update line numbers when textarea is resized
+        codeEditor.addEventListener('mouseup', updateLineNumbers);
+        codeEditor.addEventListener('keyup', updateLineNumbers);
+
+        // --- Improved Resizer Logic ---
+        let isResizing = false;
+        let animationFrameId = null;
+
+        // Mouse down event to start resizing
+        resizer.addEventListener('mousedown', function(e) {
+            isResizing = true;
+            resizer.classList.add('resizing');
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        });
+
+        // Mouse move event to handle resizing - using requestAnimationFrame for smoother updates
+        function handleResize(e) {
+            if (!isResizing) return;
+            
+            // Cancel any pending animation frame
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            
+            // Schedule the resize for the next animation frame
+            animationFrameId = requestAnimationFrame(() => {
+                const containerWidth = document.querySelector('main').offsetWidth;
+                const editorWidth = (e.clientX / containerWidth) * 100;
+                const previewWidth = 100 - editorWidth;
+
+                // Set minimum width constraints (20% each)
+                if (editorWidth >= 20 && previewWidth >= 20) {
+                    editorPanel.style.width = `${editorWidth}%`;
+                    previewPanel.style.width = `${previewWidth}%`;
+                }
+            });
+        }
+
+        document.addEventListener('mousemove', handleResize);
+
+        // Mouse up event to stop resizing
+        document.addEventListener('mouseup', function() {
+            if (isResizing) {
+                isResizing = false;
+                resizer.classList.remove('resizing');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+                
+                // Cancel any pending animation frame
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+            }
+        });
+
+        // Touch events for mobile devices - also improved with requestAnimationFrame
+        function handleTouchResize(e) {
+            if (!isResizing) return;
+            
+            // Cancel any pending animation frame
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            
+            // Schedule the resize for the next animation frame
+            animationFrameId = requestAnimationFrame(() => {
+                const touch = e.touches[0];
+                const containerWidth = document.querySelector('main').offsetWidth;
+                const editorWidth = (touch.clientX / containerWidth) * 100;
+                const previewWidth = 100 - editorWidth;
+
+                // Set minimum width constraints (20% each)
+                if (editorWidth >= 20 && previewWidth >= 20) {
+                    editorPanel.style.width = `${editorWidth}%`;
+                    previewPanel.style.width = `${previewWidth}%`;
+                }
+            });
+        }
+
+        resizer.addEventListener('touchstart', function(e) {
+            isResizing = true;
+            resizer.classList.add('resizing');
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', handleTouchResize);
+
+        document.addEventListener('touchend', function() {
+            if (isResizing) {
+                isResizing = false;
+                resizer.classList.remove('resizing');
+                document.body.style.userSelect = '';
+                
+                // Cancel any pending animation frame
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+            }
+        });
+
+        // --- Export Functionality ---
+        exportBtn.addEventListener('click', function() {
+            const code = codeEditor.value;
+            const blob = new Blob([code], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'my-website.html';
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            // Show temporary feedback
+            const originalText = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<i data-feather="check" class="w-4 h-4 mr-2"></i>Exported!';
+            feather.replace();
+            
+            setTimeout(() => {
+                exportBtn.innerHTML = originalText;
+                feather.replace();
+            }, 2000);
+        });
+    </script>
+
+</body>
+</html>
