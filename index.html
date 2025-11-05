@@ -40,6 +40,7 @@
             height: 100%;
             width: 100%;
         }
+        /* Default Scrollbar (Dark Mode) */
         .editor-textarea::-webkit-scrollbar {
             height: 8px;
             width: 8px;
@@ -51,6 +52,15 @@
         .editor-textarea::-webkit-scrollbar-track {
             background-color: #0f172a;
         }
+        
+        /* Light Mode Scrollbar */
+        .light-mode-active .editor-textarea::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1; /* slate-300 */
+        }
+        .light-mode-active .editor-textarea::-webkit-scrollbar-track {
+            background-color: #f8fafc; /* light-bg */
+        }
+
         .resizer {
             width: 10px;
             background: linear-gradient(to right, #0d9488, #0ea5e9);
@@ -68,6 +78,8 @@
         .w-0 {
             display: none !important;
         }
+        
+        /* Default Line Numbers (Dark Mode) */
         .line-numbers {
             position: absolute;
             left: 0;
@@ -84,20 +96,47 @@
             overflow: hidden;
             border-right: 1px solid #334155;
             user-select: none;
-            transition: color 0.2s;
+            transition: color 0.2s, background-color 0.3s, border-color 0.3s;
         }
         .line-numbers:hover {
             color: #94a3b8;
         }
+        
+        /* Line Numbers (Light Mode - More Distinct) */
+        .light-mode-active .line-numbers {
+            background-color: #f8fafc; /* Lighter background */
+            color: #475569; /* slate-600 - Darker color for better contrast */
+            border-right-color: #e2e8f0; /* slate-200 */
+        }
+        .light-mode-active .line-numbers:hover {
+            color: #1e293b; /* slate-800 on hover */
+        }
+        
         .editor-wrapper {
             position: relative;
             height: calc(100% - 2.5rem);
         }
+        /* Default Textarea (Dark Mode) */
         .editor-textarea {
             padding-left: 60px !important;
             overflow: scroll;
             font-family: 'Fira Code', monospace;
+            transition: color 0.3s, background-color 0.3s, border-color 0.3s;
         }
+
+        /* Textarea (Light Mode - More Distinct) */
+        .light-mode-active #code-editor {
+            background-color: #ffffff; /* White background */
+            color: #000000; /* Pure black text for high contrast */
+            border-color: #e2e8f0; /* slate-200 */
+        }
+        
+        /* Editor Panel BG (for smooth transition - Sharper Gradient) */
+        .light-mode-active#editor-panel {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%) !important;
+            border-color: #e2e8f0;
+        }
+
         .smooth-transition {
             transition: all 0.3s ease;
         }
@@ -314,6 +353,7 @@
         </div>
     </div>
     <main class="main-container flex flex-col md:flex-row">
+        <!-- Editor Panel: Default is Dark Mode -->
         <div id="editor-panel" class="panel-full-h relative w-full p-4 bg-gradient-to-br from-dark-bg to-slate-900 border-r border-slate-700 overflow-hidden smooth-transition md:w-1/2 md:flex-shrink-0">
             <div class="flex justify-between items-center mb-3">
                 <h2 class="text-lg font-semibold text-accent-300 flex items-center">
@@ -322,9 +362,24 @@
                     </svg>
                     HTML/CSS/JS Editor
                 </h2>
-                <div class="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded-md">
-                    Lines: <span id="line-count">1</span>
+                <!-- Color Mode Toggle and Line Count -->
+                <div class="flex items-center space-x-2">
+                    <button
+                        id="toggle-color-mode-btn"
+                        onclick="toggleColorMode()"
+                        class="px-2 py-1 text-xs font-semibold rounded-md smooth-transition flex items-center bg-slate-800 text-slate-400 hover:bg-slate-700"
+                        title="Toggle Editor Color Theme (Light Mode)"
+                    >
+                        <!-- Initial state (Dark Mode): Button shows Sun icon to switch to Light Mode -->
+                        <svg id="color-mode-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </button>
+                    <div class="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded-md">
+                        Lines: <span id="line-count">1</span>
+                    </div>
                 </div>
+                <!-- End Color Mode Toggle and Line Count -->
             </div>
             <div class="editor-wrapper">
                 <div id="line-numbers" class="line-numbers">1</div>
@@ -424,6 +479,12 @@
         const mobileNavPanel = document.getElementById('mobile-nav-panel');
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         
+        // --- NEW: Color Mode Toggle Elements ---
+        const toggleColorModeBtn = document.getElementById('toggle-color-mode-btn');
+        const colorModeIcon = document.getElementById('color-mode-icon');
+        let isBrightModeActive = false; // Initial state is Dark Mode
+        // --- END NEW ---
+
         // Language specific elements
         const langEnBtn = document.getElementById('lang-en-btn');
         const langTrBtn = document.getElementById('lang-tr-btn');
@@ -464,6 +525,8 @@
                 'close': 'Close',
                 'mobileEditorViewBtnTitle': 'Switch to Code Editor',
                 'mobilePreviewViewBtnTitle': 'Switch to Live Preview',
+                'toggleColorModeBtnTitleDark': 'Toggle Editor Color Theme (Light Mode)',
+                'toggleColorModeBtnTitleLight': 'Toggle Editor Color Theme (Dark Mode)',
             },
             tr: {
                 // Header/Nav
@@ -498,6 +561,8 @@
                 'close': 'Kapat',
                 'mobileEditorViewBtnTitle': 'Kod Düzenleyiciye Geç',
                 'mobilePreviewViewBtnTitle': 'Canlı Önizlemeye Geç',
+                'toggleColorModeBtnTitleDark': 'Düzenleyici Tema Rengi Değiştir (Açık Tema)',
+                'toggleColorModeBtnTitleLight': 'Düzenleyici Tema Rengi Değiştir (Koyu Tema)',
             }
         };
 
@@ -589,7 +654,14 @@
             }
             document.querySelector('#message-modal button').textContent = getTranslation('close');
 
-            // 8. Re-apply mobile view classes in case the view was switched while in mobile
+            // 8. Update Color Mode Button Title
+            if (isBrightModeActive) {
+                toggleColorModeBtn.title = getTranslation('toggleColorModeBtnTitleLight');
+            } else {
+                toggleColorModeBtn.title = getTranslation('toggleColorModeBtnTitleDark');
+            }
+            
+            // 9. Re-apply mobile view classes in case the view was switched while in mobile
             // This ensures the mobile view toggle button styling is correct
             const isDesk = isDesktop();
             if (!isDesk) {
@@ -613,6 +685,9 @@
         const ICON_CODE = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>';
         const ICON_EYE = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
         const ICON_EYE_SLASH = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 1.274-4.057 5.064-7 9.542-7 1.258 0 2.44.296 3.518.817M2.458 12C3.732 7.943 7.523 5 12 5c.196 0 .39.006.582.018M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.4 5.4l14 14"></path>';
+        const ICON_SUN = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>';
+        const ICON_MOON = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
+        
         const isDesktop = () => window.matchMedia('(min-width: 768px)').matches;
         
         function updatePreview() {
@@ -638,6 +713,30 @@
         
         codeEditor.addEventListener('input', handleInput);
         
+        // --- Toggle Color Mode Function ---
+        window.toggleColorMode = function() {
+            isBrightModeActive = !isBrightModeActive;
+
+            // Toggle classes on necessary elements
+            editorPanel.classList.toggle('light-mode-active', isBrightModeActive);
+            
+            // Toggle button style and content
+            if (isBrightModeActive) {
+                // Switch to Light Mode
+                toggleColorModeBtn.classList.remove('bg-slate-800', 'text-slate-400', 'hover:bg-slate-700');
+                toggleColorModeBtn.classList.add('bg-slate-200', 'text-slate-700', 'hover:bg-slate-300', 'shadow-inner');
+                toggleColorModeBtn.title = getTranslation('toggleColorModeBtnTitleLight');
+                colorModeIcon.innerHTML = ICON_MOON;
+            } else {
+                // Switch to Dark Mode (default)
+                toggleColorModeBtn.classList.add('bg-slate-800', 'text-slate-400', 'hover:bg-slate-700');
+                toggleColorModeBtn.classList.remove('bg-slate-200', 'text-slate-700', 'hover:bg-slate-300', 'shadow-inner');
+                toggleColorModeBtn.title = getTranslation('toggleColorModeBtnTitleDark');
+                colorModeIcon.innerHTML = ICON_SUN;
+            }
+        }
+        // --- END NEW ---
+
         function setMobileView(viewName) {
             if (viewName === 'editor') {
                 isEditorVisible = true;
