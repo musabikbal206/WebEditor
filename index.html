@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sandbox</title>
-    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Enhanced color palette with gradients and improved contrast
         tailwind.config = {
             theme: {
                 extend: {
@@ -24,41 +22,35 @@
                         'dark-text': '#f1f5f9',
                         'light-bg': '#f8fafc',
                         'light-surface': '#ffffff',
+                        'nav-home': '#3b82f6',    /* Blue-500 */
+                        'nav-about': '#f97316',   /* Orange-500 */
+                        'nav-support': '#84cc16', /* Lime-500 */
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Set font to Inter for clean look */
         body { font-family: 'Inter', sans-serif; }
-        
-        /* Main container takes full available viewport height */
         .main-container {
-            height: calc(100vh - 4rem); /* Subtract header height */
-            overflow: hidden; /* Prevent body scroll */
+            height: calc(100vh - 4rem);
+            overflow: hidden;
         }
-        
-        /* Ensure panels take full space of main container on mobile */
         .panel-full-h {
             height: 100%;
             width: 100%;
         }
-
-        /* Custom scrollbar for aesthetics (Dark Mode) */
         .editor-textarea::-webkit-scrollbar {
-            height: 8px; /* For horizontal scrollbar */
-            width: 8px; /* For vertical scrollbar */
+            height: 8px;
+            width: 8px;
         }
         .editor-textarea::-webkit-scrollbar-thumb {
-            background-color: #475569; /* slate-600 */
+            background-color: #475569;
             border-radius: 10px;
         }
         .editor-textarea::-webkit-scrollbar-track {
-            background-color: #0f172a; /* dark-bg */
+            background-color: #0f172a;
         }
-
-        /* Resizer styles with improved visibility */
         .resizer {
             width: 10px;
             background: linear-gradient(to right, #0d9488, #0ea5e9);
@@ -66,7 +58,6 @@
             transition: all 0.2s;
             z-index: 10;
             box-shadow: 0 0 8px rgba(13, 148, 136, 0.4);
-            /* Hide resizer by default on mobile, show on md+ */
             display: none;
         }
         @media (min-width: 768px) {
@@ -74,52 +65,42 @@
                 display: block;
             }
         }
-        
-        /* Ensure resizer is hidden when only one panel is visible */
         .w-0 {
             display: none !important;
         }
-
-        /* Enhanced line numbers styling */
         .line-numbers {
             position: absolute;
             left: 0;
             top: 0;
             width: 50px;
             height: 100%;
-            background-color: #0f172a; /* dark-bg */
-            color: #64748b; /* slate-500 */
+            background-color: #0f172a;
+            color: #64748b;
             text-align: right;
             padding: 1rem 0.6rem;
             font-family: 'Fira Code', monospace;
             font-size: 0.875rem;
             line-height: 1.5;
             overflow: hidden;
-            border-right: 1px solid #334155; /* slate-700 */
+            border-right: 1px solid #334155;
             user-select: none;
             transition: color 0.2s;
         }
         .line-numbers:hover {
-            color: #94a3b8; /* slate-400 */
+            color: #94a3b8;
         }
-
         .editor-wrapper {
             position: relative;
-            height: calc(100% - 2.5rem); /* Account for h2 margin */
+            height: calc(100% - 2.5rem);
         }
-
         .editor-textarea {
-            padding-left: 60px !important; /* Make room for line numbers */
+            padding-left: 60px !important;
             overflow: scroll;
             font-family: 'Fira Code', monospace;
         }
-        
-        /* Smooth transitions for UI elements */
         .smooth-transition {
             transition: all 0.3s ease;
         }
-        
-        /* Enhanced button styles */
         .btn-primary {
             background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
             box-shadow: 0 4px 6px rgba(13, 148, 136, 0.2);
@@ -129,8 +110,24 @@
             box-shadow: 0 6px 8px rgba(13, 148, 136, 0.3);
             transform: translateY(-2px);
         }
-        
-        /* Toggle buttons specific style (Desktop Only) */
+        /* Custom Colored Nav Links */
+        .nav-link-home {
+            @apply text-nav-home hover:text-blue-700 transition-colors duration-200 border-b-2 border-transparent hover:border-nav-home font-medium;
+        }
+        .nav-link-about {
+            @apply text-nav-about hover:text-orange-700 transition-colors duration-200 border-b-2 border-transparent hover:border-nav-about font-medium;
+        }
+        .nav-link-support {
+            @apply text-nav-support hover:text-lime-700 transition-colors duration-200 border-b-2 border-transparent hover:border-nav-support font-medium;
+        }
+        /* Mobile Nav Item Styling */
+        .mobile-nav-item {
+            @apply flex items-center text-lg font-semibold smooth-transition p-4 rounded-xl shadow-md border-b-4;
+        }
+        .mobile-nav-icon {
+            @apply w-7 h-7 mr-4;
+        }
+
         .btn-toggle {
             @apply px-3 py-1.5 text-sm font-medium rounded-xl smooth-transition border flex items-center;
         }
@@ -140,45 +137,50 @@
         .btn-toggle-inactive {
             @apply bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200;
         }
-        
-        /* Glass morphism effect for header */
         .glass-header {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
-        /* Enhanced modal styling */
         .modal-glass {
             background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(8px);
         }
-        
-        /* Gradient text effect */
         .gradient-text {
             background: linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
-        /* Subtle pulse animation for export button */
         @keyframes subtle-pulse {
             0% { box-shadow: 0 4px 6px rgba(13, 148, 136, 0.2); }
             50% { box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4); }
             100% { box-shadow: 0 4px 6px rgba(13, 148, 136, 0.2); }
         }
-        
         .pulse-effect {
             animation: subtle-pulse 3s infinite;
         }
+        .mobile-nav-panel {
+            top: 64px;
+            height: calc(100vh - 64px);
+            z-index: 15;
+            transition: transform 0.3s ease-out;
+            transform: translateX(100%);
+        }
+        .mobile-nav-open {
+            transform: translateX(0);
+        }
+        /* Language Switch Classes */
+        .lang-active {
+            @apply bg-accent-500 text-white shadow-md;
+        }
+        .lang-inactive {
+            @apply text-slate-700 hover:bg-slate-300;
+        }
     </style>
-    <!-- Add Fira Code font for better code readability -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-slate-100">
-
-    <!-- Enhanced Header with Glass Morphism -->
     <header class="h-16 glass-header shadow-lg flex items-center justify-between px-4 md:px-8 sticky top-0 z-20">
         <h1 class="text-xl md:text-2xl font-bold gradient-text flex items-center">
             <svg class="inline w-6 h-6 md:w-7 md:h-7 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -187,13 +189,28 @@
             Sandbox
         </h1>
         <div class="flex items-center space-x-2 md:space-x-4">
+            <nav class="hidden md:flex items-center space-x-6">
+                <!-- Desktop Nav Links with Custom Colors -->
+                <a href="#" class="nav-link-home flex items-center text-sm" onclick="return handleNavClick('home')">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0v-2a1 1 0 00-1-1h-2a1 1 0 00-1 1v2m-6 0h6"></path></svg>
+                    Home
+                </a>
+                <a href="#" class="nav-link-about flex items-center text-sm" onclick="return handleNavClick('about')">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    About
+                </a>
+                <a href="#" class="nav-link-support flex items-center text-sm" onclick="return handleNavClick('support')" title="Support the Developer">
+                    Support Us 
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.382 22H6.5a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.618 10H10a2 2 0 002-2V2M7 6h10"></path></svg>
+                </a>
+            </nav>
             
-            <!-- Mobile/Tablet View Switcher -->
-            <div id="mobile-view-switch" class="flex md:hidden rounded-xl bg-slate-200 p-0.5 shadow-inner">
+            <!-- Mobile Panel View Switch -->
+            <div id="mobile-view-switch" class="flex md:hidden rounded-xl bg-slate-200 p-0.5 shadow-inner smooth-transition">
                 <button
                     id="mobile-editor-view-btn"
                     onclick="setMobileView('editor')"
-                    class="px-3 py-1.5 text-sm font-medium rounded-xl smooth-transition bg-accent-500 text-white shadow-md"
+                    class="px-3 py-1.5 text-sm font-medium rounded-xl smooth-transition"
                     title="Switch to Code Editor"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
@@ -201,21 +218,38 @@
                 <button
                     id="mobile-preview-view-btn"
                     onclick="setMobileView('preview')"
-                    class="px-3 py-1.5 text-sm font-medium rounded-xl smooth-transition text-slate-700 hover:bg-slate-300"
+                    class="px-3 py-1.5 text-sm font-medium rounded-xl smooth-transition"
                     title="Switch to Live Preview"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                 </button>
             </div>
+
+            <!-- Language Switch (New) -->
+            <div id="language-switch" class="flex rounded-xl bg-slate-200 p-0.5 shadow-inner smooth-transition">
+                <button
+                    id="lang-en-btn"
+                    onclick="setLanguage('en')"
+                    class="px-2 py-1.5 text-xs font-semibold rounded-xl smooth-transition"
+                >
+                    Eng
+                </button>
+                <button
+                    id="lang-tr-btn"
+                    onclick="setLanguage('tr')"
+                    class="px-2 py-1.5 text-xs font-semibold rounded-xl smooth-transition"
+                >
+                    Tr
+                </button>
+            </div>
             
-            <!-- Desktop Toggle Buttons (Hidden on mobile) -->
+            <!-- Desktop Panel Toggles -->
             <button
                 id="toggle-editor-btn"
                 onclick="togglePanel('editor')"
                 class="hidden md:inline-flex btn-toggle btn-toggle-active"
                 title="Toggle Editor Visibility"
             >
-                <!-- This will be dynamically updated by JavaScript -->
                 <svg id="toggle-editor-icon" class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                 <span id="toggle-editor-text">Hide Editor</span>
             </button>
@@ -225,13 +259,9 @@
                 class="hidden md:inline-flex btn-toggle btn-toggle-active"
                 title="Toggle Live Preview Visibility"
             >
-                <!-- This will be dynamically updated by JavaScript -->
                 <svg id="toggle-preview-icon" class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                 <span id="toggle-preview-text">Hide Preview</span>
             </button>
-            <!-- End Desktop Toggle Buttons -->
-            
-            <!-- EXPORT BUTTON - Now Responsive -->
             <button
                 id="export-button"
                 onclick="downloadDocument()"
@@ -243,13 +273,47 @@
                 </svg>
                 <span class="hidden sm:inline">Export HTML</span>
             </button>
-            <!-- END EXPORT BUTTON -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-full text-slate-700 hover:bg-slate-200 smooth-transition" onclick="toggleMobileNav()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
         </div>
     </header>
-
-    <!-- Enhanced Main Editor Area - Uses flex-col for mobile stacking -->
+    <div id="mobile-nav-panel" class="mobile-nav-panel fixed right-0 w-full bg-white shadow-2xl overflow-y-auto">
+        <div class="p-6 space-y-4">
+            <!-- Mobile Nav Links with Custom Colors and Enhanced UI -->
+            <a href="#" class="block" onclick="handleMobileNavClick('home')">
+                <div class="mobile-nav-item bg-blue-50 border-nav-home text-nav-home">
+                    <svg class="mobile-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0v-2a1 1 0 00-1-1h-2a1 1 0 00-1 1v2m-6 0h6"></path></svg>
+                    Home
+                </div>
+            </a>
+            <a href="#" class="block" onclick="handleMobileNavClick('about')">
+                <div class="mobile-nav-item bg-orange-50 border-nav-about text-nav-about">
+                    <svg class="mobile-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    About This Tool
+                </div>
+            </a>
+            <a href="#" class="block" onclick="handleMobileNavClick('support')">
+                <div class="mobile-nav-item bg-lime-50 border-nav-support text-nav-support">
+                    <svg class="mobile-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.382 22H6.5a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.618 10H10a2 2 0 002-2V2M7 6h10"></path></svg>
+                    Support Us
+                </div>
+            </a>
+        </div>
+        <div class="p-6">
+             <button
+                onclick="downloadDocument(); toggleMobileNav();"
+                class="w-full py-3 btn-primary text-white text-lg font-semibold rounded-xl smooth-transition items-center flex justify-center shadow-lg"
+                title="Export HTML Document"
+            >
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                Export HTML Document
+            </button>
+        </div>
+    </div>
     <main class="main-container flex flex-col md:flex-row">
-        <!-- Enhanced Code Editor Panel (Dark Mode) -->
         <div id="editor-panel" class="panel-full-h relative w-full p-4 bg-gradient-to-br from-dark-bg to-slate-900 border-r border-slate-700 overflow-hidden smooth-transition md:w-1/2 md:flex-shrink-0">
             <div class="flex justify-between items-center mb-3">
                 <h2 class="text-lg font-semibold text-accent-300 flex items-center">
@@ -270,7 +334,6 @@
                     placeholder="Start typing your HTML, CSS (in <style> tags), and JavaScript (in <script> tags) here..."
                     wrap="off"
                 >
-<!-- Start editing your website here! -->
 <div class="p-8 bg-white rounded-2xl shadow-2xl max-w-sm mx-auto my-4 text-center border border-slate-100">
     <h1 class="text-3xl font-bold text-slate-800 mb-2">My Website</h1>
     <p class="text-accent-600 font-medium">Live preview generated below!</p>
@@ -280,7 +343,6 @@
 </div>
 
 <style>
-    /* Added a smooth transition for the body background */
     body {
         margin: 0;
         padding: 20px;
@@ -295,22 +357,16 @@
 </style>
 
 <script>
-    // Custom message box function instead of alert()
     function showMessageBox(message) {
         console.log("Custom message:", message);
-        // You would typically implement a custom modal UI here.
-        // For now, we'll log to the console as a safe alternative.
+        window.showAppModal("Message", message, false);
     }
 </script>
                 </textarea>
             </div>
         </div>
-
-        <!-- Enhanced Resizer (Hidden on mobile) -->
         <div id="resizer" class="resizer smooth-transition hidden md:block"></div>
-
-        <!-- Enhanced Live Preview Panel -->
-        <div id="preview-panel" class="panel-full-h relative w-full p-0 bg-gradient-to-br from-slate-50 to-slate-100 shadow-inner overflow-hidden smooth-transition md:w-1/2 md:flex-grow" style="display: none;">
+        <div id="preview-panel" class="panel-full-h relative w-full p-0 bg-gradient-to-br from-slate-50 to-slate-100 shadow-inner overflow-hidden smooth-transition md:w-1/2 md:flex-grow">
             <div class="flex justify-between items-center p-4 border-b border-slate-200">
                 <h2 class="text-lg font-semibold text-slate-700 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -330,8 +386,6 @@
             ></iframe>
         </div>
     </main>
-
-    <!-- Enhanced Custom Modal/Message Box (Hidden by default) -->
     <div id="message-modal" class="hidden fixed inset-0 modal-glass flex items-center justify-center p-4 z-30">
         <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full transform transition-all duration-300 scale-95 opacity-0 border border-slate-100" id="modal-content">
             <div class="flex items-center mb-4">
@@ -340,15 +394,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-slate-800">Message</h3>
+                <h3 id="modal-title" class="text-xl font-bold text-slate-800">Message</h3> 
             </div>
             <p id="modal-text" class="text-slate-600 mb-6"></p>
             <button onclick="closeMessageBox()" class="w-full py-3 btn-primary text-white rounded-xl smooth-transition font-medium">Close</button>
         </div>
     </div>
-
     <script type="text/javascript">
-        // --- Core Application Logic & Initialization ---
         const codeEditor = document.getElementById('code-editor');
         const previewFrame = document.getElementById('preview-frame');
         const resizer = document.getElementById('resizer');
@@ -358,78 +410,234 @@
         const messageModal = document.getElementById('message-modal');
         const modalContent = document.getElementById('modal-content');
         const modalText = document.getElementById('modal-text');
+        const modalTitle = document.getElementById('modal-title');
         const lineCount = document.getElementById('line-count');
-        
-        // New elements for toggling (Desktop Only)
         const toggleEditorBtn = document.getElementById('toggle-editor-btn');
         const togglePreviewBtn = document.getElementById('toggle-preview-btn');
-        
-        // Dynamic text and icon elements for desktop buttons
         const toggleEditorText = document.getElementById('toggle-editor-text');
         const toggleEditorIcon = document.getElementById('toggle-editor-icon');
         const togglePreviewText = document.getElementById('toggle-preview-text');
         const togglePreviewIcon = document.getElementById('toggle-preview-icon');
-
-        // New elements for Mobile Switching
         const mobileEditorBtn = document.getElementById('mobile-editor-view-btn');
         const mobilePreviewBtn = document.getElementById('mobile-preview-view-btn');
         const mobileSwitchContainer = document.getElementById('mobile-view-switch');
+        const mobileNavPanel = document.getElementById('mobile-nav-panel');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        
+        // Language specific elements
+        const langEnBtn = document.getElementById('lang-en-btn');
+        const langTrBtn = document.getElementById('lang-tr-btn');
+        let currentLang = 'en';
 
-        // Initial state
+        // --- TRANSLATIONS ---
+        const translations = {
+            en: {
+                // Header/Nav
+                'editorTitle': 'HTML/CSS/JS Editor',
+                'previewTitle': 'Live Preview',
+                'hideEditor': 'Hide Editor',
+                'openEditor': 'Open Editor',
+                'hidePreview': 'Hide Preview',
+                'openPreview': 'Open Preview',
+                'exportHtml': 'Export HTML',
+                'exportHtmlDoc': 'Export HTML Document',
+                'lines': 'Lines',
+                'responsive': 'Responsive',
+                'home': 'Home',
+                'about': 'About',
+                'supportUs': 'Support Us',
+                'aboutThisTool': 'About This Tool',
+                'supportOurWork': 'Support Our Work',
+                // Modals
+                'welcomeHomeTitle': 'Welcome Home!',
+                'welcomeHomeContent': 'Welcome! This is your real-time Coding on Sandbox. Use the editor on the left to write HTML, CSS, and JavaScript. Your changes will instantly appear in the live preview on the right. Focus on responsive design and clean code! Happy coding.',
+                'aboutSandboxTitle': 'Developer: Musab İkbal Subaşı',
+                'aboutSandboxContentP1': 'This interactive sandbox is built for fast, focused front-end development.',
+                'aboutSandboxContentItem1': 'Real-time Preview: See your HTML, Tailwind CSS, and JavaScript update instantly.',
+                'aboutSandboxContentItem2': 'Fully Responsive: Test your design on any screen size using the responsive preview panel.',
+                'aboutSandboxContentItem3': 'Integrated Tools: No external tools needed.',
+                'aboutSandboxContentP2': 'Version 1.2 | Thank you for using this tool!',
+                'supportTitle': 'Keep the Sandbox Running!',
+                'supportP1': 'If you find this real-time coding tool helpful for your projects, consider a small contribution. Your support helps cover maintenance and development costs for new features!',
+                'supportButton': 'Buy Us a Coffee',
+                'message': 'Message',
+                'close': 'Close',
+                'mobileEditorViewBtnTitle': 'Switch to Code Editor',
+                'mobilePreviewViewBtnTitle': 'Switch to Live Preview',
+            },
+            tr: {
+                // Header/Nav
+                'editorTitle': 'HTML/CSS/JS Düzenleyici',
+                'previewTitle': 'Canlı Önizleme',
+                'hideEditor': 'Düzenleyiciyi Gizle',
+                'openEditor': 'Düzenleyiciyi Aç',
+                'hidePreview': 'Önizlemeyi Gizle',
+                'openPreview': 'Önizlemeyi Aç',
+                'exportHtml': 'HTML Dışa Aktar',
+                'exportHtmlDoc': 'HTML Belgesini Dışa Aktar',
+                'lines': 'Satır',
+                'responsive': 'Duyarlı',
+                'home': 'Ana Sayfa',
+                'about': 'Hakkında',
+                'supportUs': 'Bizi Destekle',
+                'aboutThisTool': 'Bu Araç Hakkında',
+                'supportOurWork': 'Çalışmamızı Destekle',
+                // Modals
+                'welcomeHomeTitle': 'Ana Sayfaya Hoş Geldiniz!',
+                'welcomeHomeContent': 'Hoş geldiniz! Bu, Sandbox\'taki gerçek zamanlı Kodlamanızdır. Soldaki düzenleyiciyi kullanarak HTML, CSS ve JavaScript yazın. Yaptığınız değişiklikler canlı önizlemede anında görünecektir. Duyarlı tasarıma ve temiz koda odaklanın! İyi kodlamalar.',
+                'aboutSandboxTitle': 'Geliştirici: Musab İkbal Subaşı',
+                'aboutSandboxContentP1': 'Bu etkileşimli Sandbox, hızlı ve odaklanmış front end geliştirme için tasarlanmıştır.',
+                'aboutSandboxContentItem1': 'Gerçek Zamanlı Önizleme: HTML, Tailwind CSS ve JavaScript güncellemelerinizi anında görün.',
+                'aboutSandboxContentItem2': 'Tamamen Duyarlı: Duyarlı önizleme panelini kullanarak tasarımınızı herhangi bir ekran boyutunda test edin.',
+                'aboutSandboxContentItem3': 'Entegre Araçlar: Harici araçlara gerek yok.',
+                'aboutSandboxContentP2': 'Sürüm 1.2 | Bu aracı kullandığınız için teşekkür ederiz!',
+                'supportTitle': 'Sandbox\'ı Çalışır Durumda Tutun!',
+                'supportP1': 'Bu gerçek zamanlı kodlama aracını projeleriniz için faydalı buluyorsanız, küçük bir katkıyı değerlendirin. Desteğiniz, yeni özellikler için bakım ve geliştirme maliyetlerini karşılamaya yardımcı olur!',
+                'supportButton': 'Bize Bir Kahve Ismarla',
+                'message': 'Mesaj',
+                'close': 'Kapat',
+                'mobileEditorViewBtnTitle': 'Kod Düzenleyiciye Geç',
+                'mobilePreviewViewBtnTitle': 'Canlı Önizlemeye Geç',
+            }
+        };
+
+        function getTranslation(key) {
+            return translations[currentLang][key] || translations['en'][key] || key;
+        }
+
+        function setLanguage(lang) {
+            if (lang === currentLang) return;
+            currentLang = lang;
+            
+            // 1. Update Language Switch buttons
+            langEnBtn.classList.remove('lang-active', 'lang-inactive');
+            langTrBtn.classList.remove('lang-active', 'lang-inactive');
+            
+            if (lang === 'en') {
+                langEnBtn.classList.add('lang-active');
+                langTrBtn.classList.add('lang-inactive');
+            } else {
+                langTrBtn.classList.add('lang-active');
+                langEnBtn.classList.add('lang-inactive');
+            }
+
+            // 2. Update Header/Nav text (Desktop)
+            document.querySelector('.nav-link-home').innerHTML = `
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0v-2a1 1 0 00-1-1h-2a1 1 0 00-1 1v2m-6 0h6"></path></svg>
+                ${getTranslation('home')}
+            `;
+            document.querySelector('.nav-link-about').innerHTML = `
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                ${getTranslation('about')}
+            `;
+            document.querySelector('.nav-link-support').innerHTML = `
+                ${getTranslation('supportUs')}
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.382 22H6.5a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.618 10H10a2 2 0 002-2V2M7 6h10"></path></svg>
+            `;
+            document.querySelector('.nav-link-support').title = getTranslation('supportOurWork');
+
+            // 3. Update Mobile Nav Panel
+            document.querySelector('.mobile-nav-item.text-nav-home').innerHTML = `
+                <svg class="mobile-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0v-2a1 1 0 00-1-1h-2a1 1 0 00-1 1v2m-6 0h6"></path></svg>
+                ${getTranslation('home')}
+            `;
+            document.querySelector('.mobile-nav-item.text-nav-about').innerHTML = `
+                <svg class="mobile-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                ${getTranslation('aboutThisTool')}
+            `;
+            document.querySelector('.mobile-nav-item.text-nav-support').innerHTML = `
+                <svg class="mobile-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.382 22H6.5a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.618 10H10a2 2 0 002-2V2M7 6h10"></path></svg>
+                ${getTranslation('supportUs')}
+            `;
+            document.querySelector('#mobile-nav-panel .btn-primary').innerHTML = `
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                ${getTranslation('exportHtmlDoc')}
+            `;
+
+            // 4. Update Main Panel Titles/Info
+            document.querySelector('#editor-panel h2').innerHTML = `
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+                ${getTranslation('editorTitle')}
+            `;
+            document.querySelector('#editor-panel .text-xs').childNodes[0].nodeValue = `${getTranslation('lines')}: `;
+            
+            document.querySelector('#preview-panel h2').innerHTML = `
+                <svg class="w-5 h-5 mr-2 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                ${getTranslation('previewTitle')}
+            `;
+            document.querySelector('#preview-panel .text-xs').textContent = getTranslation('responsive');
+
+            // 5. Update Export button
+            document.querySelector('#export-button span').textContent = getTranslation('exportHtml');
+            document.querySelector('#export-button').title = getTranslation('exportHtmlDoc');
+            
+            // 6. Update Panel Toggles (Desktop only) and Mobile view titles
+            updateDesktopToggles();
+            mobileEditorBtn.title = getTranslation('mobileEditorViewBtnTitle');
+            mobilePreviewBtn.title = getTranslation('mobilePreviewViewBtnTitle');
+            
+            // 7. Update Modal default title
+            if(messageModal.classList.contains('hidden')) {
+                modalTitle.textContent = getTranslation('message');
+            }
+            document.querySelector('#message-modal button').textContent = getTranslation('close');
+
+            // 8. Re-apply mobile view classes in case the view was switched while in mobile
+            // This ensures the mobile view toggle button styling is correct
+            const isDesk = isDesktop();
+            if (!isDesk) {
+                if (isEditorVisible) {
+                    mobileEditorBtn.classList.add('bg-accent-500', 'text-white', 'shadow-md');
+                    mobileEditorBtn.classList.remove('text-slate-700', 'hover:bg-slate-300');
+                    mobilePreviewBtn.classList.remove('bg-accent-500', 'text-white', 'shadow-md');
+                    mobilePreviewBtn.classList.add('text-slate-700', 'hover:bg-slate-300');
+                } else {
+                    mobilePreviewBtn.classList.add('bg-accent-500', 'text-white', 'shadow-md');
+                    mobilePreviewBtn.classList.remove('text-slate-700', 'hover:bg-slate-300');
+                    mobileEditorBtn.classList.remove('bg-accent-500', 'text-white', 'shadow-md');
+                    mobileEditorBtn.classList.add('text-slate-700', 'hover:bg-slate-300');
+                }
+            }
+        }
+        
         let isEditorVisible = true;
         let isPreviewVisible = true;
         let isResizing = false;
-
-        // SVG Icons
         const ICON_CODE = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>';
         const ICON_EYE = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
         const ICON_EYE_SLASH = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 1.274-4.057 5.064-7 9.542-7 1.258 0 2.44.296 3.518.817M2.458 12C3.732 7.943 7.523 5 12 5c.196 0 .39.006.582.018M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.4 5.4l14 14"></path>';
-
-        // Media query to detect desktop size (md breakpoint is 768px in Tailwind)
         const isDesktop = () => window.matchMedia('(min-width: 768px)').matches;
-
-
-        /**
-         * Writes the content of the textarea directly into the iframe's document.
-         */
+        
         function updatePreview() {
-            // Check if preview is visible and if we are not on desktop and the editor is visible (mobile editor view)
             const shouldUpdate = isPreviewVisible || !isDesktop(); 
             if (!shouldUpdate) return;
-            
             const code = codeEditor.value;
             const iframeDoc = previewFrame.contentWindow.document;
-
-            // Using document.write to fully replace the iframe's content
             iframeDoc.open();
-            // Prevent the user from using window.alert() in their code
-            const safeCode = code.replace(/alert\(/g, 'showMessageBox(');
+            // Use showAppModal via window.parent for cross-frame message box
+            const safeCode = code.replace(/alert\(/g, 'window.parent.showAppModal(\'Message\',');
             iframeDoc.write(safeCode);
             iframeDoc.close();
         }
-
-        // --- Debouncing for Performance ---
+        
         let timeout = null;
-        const DEBOUNCE_DELAY = 150; // milliseconds
-
-        /**
-         * Debounced event handler for real-time updates.
-         */
+        const DEBOUNCE_DELAY = 150;
+        
         function handleInput() {
             clearTimeout(timeout);
             timeout = setTimeout(updatePreview, DEBOUNCE_DELAY);
             updateLineNumbers();
         }
-
-        // Attach the debounced handler to the input event for live typing updates
+        
         codeEditor.addEventListener('input', handleInput);
-
-
-        // --- New Panel Toggle Logic (Responsive) ---
-        /**
-         * Sets the active view on mobile devices.
-         * @param {'editor' | 'preview'} viewName - The view to make active.
-         */
+        
         function setMobileView(viewName) {
             if (viewName === 'editor') {
                 isEditorVisible = true;
@@ -441,139 +649,109 @@
             updatePanelLayout();
         }
         
-        /**
-         * Toggles the visibility of either the 'editor' or 'preview' panel.
-         * For mobile, this is repurposed to switch the view.
-         * @param {'editor' | 'preview'} panelType - The type of panel to toggle.
-         */
         window.togglePanel = function(panelType) {
             if (isDesktop()) {
-                // Desktop Split Logic
                 if (panelType === 'editor') {
-                    // If trying to hide editor, ensure preview is visible
                     if (isEditorVisible && !isPreviewVisible) return;
                     isEditorVisible = !isEditorVisible;
                 } else if (panelType === 'preview') {
-                    // If trying to hide preview, ensure editor is visible
                     if (isPreviewVisible && !isEditorVisible) return;
                     isPreviewVisible = !isPreviewVisible;
                 }
             } else {
-                // Mobile Single View Logic - Desktop toggles become view switches
+                // In mobile, desktop toggles trigger view switch
                 if (panelType === 'editor') {
-                    // Toggling editor visibility usually means we want to see preview
-                    setMobileView('preview');
-                } else if (panelType === 'preview') {
-                    // Toggling preview visibility usually means we want to see editor
                     setMobileView('editor');
+                } else if (panelType === 'preview') {
+                    setMobileView('preview');
                 }
             }
             updatePanelLayout();
         }
-
-        /**
-         * Updates the desktop toggle buttons with the correct text, icon, and classes.
-         */
+        
         function updateDesktopToggles() {
-            // Editor Toggle Button
             if (isEditorVisible) {
-                toggleEditorText.textContent = 'Hide Editor';
-                toggleEditorIcon.innerHTML = ICON_CODE; // Use code icon for Editor
+                toggleEditorText.textContent = getTranslation('hideEditor');
+                toggleEditorIcon.innerHTML = ICON_CODE;
                 toggleEditorBtn.classList.add('btn-toggle-active');
                 toggleEditorBtn.classList.remove('btn-toggle-inactive');
             } else {
-                toggleEditorText.textContent = 'Open Editor';
-                toggleEditorIcon.innerHTML = ICON_CODE; // Still use code icon for Editor
+                toggleEditorText.textContent = getTranslation('openEditor');
+                toggleEditorIcon.innerHTML = ICON_CODE;
                 toggleEditorBtn.classList.remove('btn-toggle-active');
                 toggleEditorBtn.classList.add('btn-toggle-inactive');
             }
+            toggleEditorBtn.title = toggleEditorText.textContent;
 
-            // Preview Toggle Button
             if (isPreviewVisible) {
-                togglePreviewText.textContent = 'Hide Preview';
-                togglePreviewIcon.innerHTML = ICON_EYE; // Open eye icon for visible Preview
+                togglePreviewText.textContent = getTranslation('hidePreview');
+                togglePreviewIcon.innerHTML = ICON_EYE;
                 togglePreviewBtn.classList.add('btn-toggle-active');
                 togglePreviewBtn.classList.remove('btn-toggle-inactive');
             } else {
-                togglePreviewText.textContent = 'Open Preview';
-                togglePreviewIcon.innerHTML = ICON_EYE_SLASH; // Closed eye icon for hidden Preview
+                togglePreviewText.textContent = getTranslation('openPreview');
+                togglePreviewIcon.innerHTML = ICON_EYE_SLASH;
                 togglePreviewBtn.classList.remove('btn-toggle-active');
                 togglePreviewBtn.classList.add('btn-toggle-inactive');
             }
+            togglePreviewBtn.title = togglePreviewText.textContent;
         }
-
-
-        /**
-         * Applies the correct width and button classes based on the current visibility state and screen size.
-         */
+        
         function updatePanelLayout() {
             const isDesk = isDesktop();
-            
-            // --- Reset All Layout Styles ---
             const resetClasses = ['w-0', 'p-0', 'border-r-0', 'w-full', 'md:w-1/2'];
             editorPanel.classList.remove(...resetClasses);
             previewPanel.classList.remove(...resetClasses);
             editorPanel.style.width = '';
             previewPanel.style.width = '';
-
-            // --- Desktop Logic (Split View) ---
+            mobileNavPanel.classList.remove('mobile-nav-open');
+            
             if (isDesk) {
-                // Show desktop buttons, hide mobile switch
+                // Desktop Layout
                 toggleEditorBtn.classList.remove('hidden');
                 togglePreviewBtn.classList.remove('hidden');
                 mobileSwitchContainer.classList.add('hidden');
-                
-                // Update toggles before layout
+                mobileMenuBtn.classList.add('hidden');
                 updateDesktopToggles();
                 
-                // Re-enable resizer display if both are visible
                 resizer.style.display = (isEditorVisible && isPreviewVisible) ? 'block' : 'none';
                 
-                // Apply desktop visibility
                 if (isEditorVisible) {
                     editorPanel.style.display = 'block';
                     editorPanel.classList.add(isPreviewVisible ? 'md:w-1/2' : 'w-full');
                 } else {
                     editorPanel.style.display = 'none';
                 }
-
+                
                 if (isPreviewVisible) {
                     previewPanel.style.display = 'block';
                     previewPanel.classList.add(isEditorVisible ? 'md:w-1/2' : 'w-full');
-                    updatePreview(); // Ensure preview is updated when opened
+                    updatePreview();
                     if (isEditorVisible && !isResizing) {
-                        // Ensure default 50/50 split if both are visible
                         editorPanel.style.width = '50%';
                         previewPanel.style.width = '50%';
                     }
                 } else {
                     previewPanel.style.display = 'none';
                 }
-                
             } 
-            // --- Mobile Logic (Single View) ---
             else {
-                // Hide desktop buttons, show mobile switch
+                // Mobile Layout
                 toggleEditorBtn.classList.add('hidden');
                 togglePreviewBtn.classList.add('hidden');
                 mobileSwitchContainer.classList.remove('hidden'); 
-                resizer.style.display = 'none'; // Ensure resizer is gone
+                mobileMenuBtn.classList.remove('hidden');
+                resizer.style.display = 'none';
 
-                // Mobile panels should be full-screen, so one is visible, one is hidden.
-                if (isEditorVisible || !isPreviewVisible) { // Default to editor if state is weird
+                // Default to editor if both are hidden (shouldn't happen with correct flow)
+                if (!isEditorVisible && !isPreviewVisible) {
                     isEditorVisible = true;
                     isPreviewVisible = false;
-                } else {
-                    isEditorVisible = false;
-                    isPreviewVisible = true;
                 }
-
-                // Apply mobile visibility
+                
                 if (isEditorVisible) {
                     editorPanel.style.display = 'block';
                     previewPanel.style.display = 'none';
-                    
-                    // Update mobile switch styling
                     mobileEditorBtn.classList.add('bg-accent-500', 'text-white', 'shadow-md');
                     mobileEditorBtn.classList.remove('text-slate-700', 'hover:bg-slate-300');
                     mobilePreviewBtn.classList.remove('bg-accent-500', 'text-white', 'shadow-md');
@@ -581,9 +759,7 @@
                 } else {
                     editorPanel.style.display = 'none';
                     previewPanel.style.display = 'block';
-                    updatePreview(); // Update preview when switching to it
-                    
-                    // Update mobile switch styling
+                    updatePreview();
                     mobilePreviewBtn.classList.add('bg-accent-500', 'text-white', 'shadow-md');
                     mobilePreviewBtn.classList.remove('text-slate-700', 'hover:bg-slate-300');
                     mobileEditorBtn.classList.remove('bg-accent-500', 'text-white', 'shadow-md');
@@ -592,35 +768,35 @@
             }
         }
         
-        // --- Enhanced Line Numbers Logic ---
+        function toggleMobileNav() {
+            mobileNavPanel.classList.toggle('mobile-nav-open');
+        }
+        
+        function handleMobileNavClick(page) {
+            toggleMobileNav();
+            setTimeout(() => {
+                window.handleNavClick(page); 
+            }, 300); 
+            return false;
+        }
+        
         function updateLineNumbers() {
-            // Lines are calculated based on newline characters
             const lines = codeEditor.value.split('\n').length;
             let lineNumbersHTML = '';
-            
-            // Update line count display
             lineCount.textContent = lines;
-
             for (let i = 1; i <= lines; i++) {
                 lineNumbersHTML += i + '<br>';
             }
-
             lineNumbers.innerHTML = lineNumbersHTML;
-
-            // Sync vertical scroll position only. Horizontal scroll is independent.
             lineNumbers.scrollTop = codeEditor.scrollTop;
         }
-
-        // Sync scrolling of textarea and line numbers (Vertical only)
+        
         codeEditor.addEventListener('scroll', function() {
             lineNumbers.scrollTop = codeEditor.scrollTop;
         });
-
-        // Update line numbers when textarea is resized or content changes
         codeEditor.addEventListener('mouseup', updateLineNumbers);
         codeEditor.addEventListener('keyup', updateLineNumbers);
-
-        // --- Export Document Function ---
+        
         function downloadDocument() {
             const code = codeEditor.value;
             const blob = new Blob([code], { type: 'text/html' });
@@ -632,102 +808,131 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
-            // Add a subtle feedback animation
             const exportBtn = document.getElementById('export-button');
             exportBtn.classList.remove('pulse-effect');
             setTimeout(() => {
                 exportBtn.classList.add('pulse-effect');
             }, 100);
         }
-
-        // --- Resizer Logic (Touch and Mouse - Desktop Only) ---
+        
         let animationFrameId = null;
-
         function startResize(e) {
             if (!isDesktop() || !isEditorVisible || !isPreviewVisible) return;
-            
             isResizing = true;
             resizer.classList.add('resizing');
             document.body.style.cursor = 'col-resize';
             document.body.style.userSelect = 'none';
             e.preventDefault();
         }
-
+        
         function stopResize() {
             if (isResizing) {
                 isResizing = false;
                 resizer.classList.remove('resizing');
                 document.body.style.cursor = '';
                 document.body.style.userSelect = '';
-
                 if (animationFrameId) {
                     cancelAnimationFrame(animationFrameId);
                     animationFrameId = null;
                 }
             }
         }
-
+        
         function handleResize(clientX) {
             if (!isResizing) return;
-
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
-
             animationFrameId = requestAnimationFrame(() => {
                 const containerWidth = document.querySelector('main').offsetWidth;
                 const editorWidth = (clientX / containerWidth) * 100;
                 const previewWidth = 100 - editorWidth;
-
-                // Set minimum width constraints (20% each)
                 if (editorWidth >= 20 && previewWidth >= 20) {
                     editorPanel.style.width = `${editorWidth}%`;
                     previewPanel.style.width = `${previewWidth}%`;
                 }
             });
         }
-
-        // Mouse Handlers
+        
         resizer.addEventListener('mousedown', startResize);
         document.addEventListener('mousemove', (e) => handleResize(e.clientX));
         document.addEventListener('mouseup', stopResize);
-
-        // Touch Handlers (only used on desktop for the resizer)
         resizer.addEventListener('touchstart', (e) => startResize(e.touches[0]));
         document.addEventListener('touchmove', (e) => handleResize(e.touches[0].clientX));
         document.addEventListener('touchend', stopResize);
-
-        // --- Custom Message Box for Alert() Replacement ---
-        window.showMessageBox = function(message) {
-            modalText.textContent = message;
+        
+        window.showAppModal = function(title, content, isHtml = false) {
+            modalTitle.textContent = title;
+            if (isHtml) {
+                modalText.innerHTML = content;
+            } else {
+                modalText.textContent = content;
+            }
             messageModal.classList.remove('hidden');
-            // Trigger animation
             setTimeout(() => {
                 modalContent.classList.remove('scale-95', 'opacity-0');
                 modalContent.classList.add('scale-100', 'opacity-100');
             }, 10);
         }
-
+        
+        window.showMessageBox = function(message) {
+             window.showAppModal(getTranslation('message'), message, false);
+        }
+        
         window.closeMessageBox = function() {
-            // Trigger animation out
             modalContent.classList.remove('scale-100', 'opacity-100');
             modalContent.classList.add('scale-95', 'opacity-0');
             setTimeout(() => {
                 messageModal.classList.add('hidden');
-            }, 300); // Match CSS transition duration
+                modalTitle.textContent = getTranslation('message');
+                modalText.textContent = '';
+            }, 300);
         }
         
-        // --- Initialization and Global Event Handlers ---
+        window.handleNavClick = function(page) {
+            if (page === 'home') {
+                window.showAppModal(
+                    getTranslation('welcomeHomeTitle'), 
+                    getTranslation('welcomeHomeContent'),
+                    false
+                );
+            } else if (page === 'about') {
+                const aboutContent = `
+                    <div class="text-left text-slate-700 space-y-4">
+                        <p class="mb-3 text-lg font-bold text-accent-700">${getTranslation('aboutSandboxTitle')}</p>
+                        <p>${getTranslation('aboutSandboxContentP1')}</p>
+                        <ul class="list-disc pl-5 text-sm space-y-2">
+                            <li>${getTranslation('aboutSandboxContentItem1')}</li>
+                            <li>${getTranslation('aboutSandboxContentItem2')}</li>
+                            <li>${getTranslation('aboutSandboxContentItem3')}</li>
+                        </ul>
+                        <p class="text-sm text-slate-500 mt-4">${getTranslation('aboutSandboxContentP2')}</p>
+                    </div>
+                `;
+                window.showAppModal(getTranslation('aboutThisTool'), aboutContent, true);
+            } else if (page === 'support') {
+                const supportContent = `
+                    <div class="text-left text-slate-700 text-center">
+                        <p class="text-xl font-bold text-slate-800 mb-3">${getTranslation('supportTitle')}</p>
+                        <p class="mb-6">${getTranslation('supportP1')}</p>
+                        <a href="https://buymeacoffee.com/musabikbal" target="_blank" class="w-full py-3 btn-primary text-white rounded-xl smooth-transition font-medium inline-block text-lg shadow-lg hover:shadow-xl" onclick="closeMessageBox();">
+                            <svg class="w-5 h-5 inline mr-2 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.382 22H6.5a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.618 10H10a2 2 0 002-2V2M7 6h10"></path></svg>
+                            ${getTranslation('supportButton')}
+                        </a>
+                    </div>
+                `;
+                window.showAppModal(getTranslation('supportOurWork'), supportContent, true);
+            }
+            return false;
+        }
+        
         window.onload = function() {
-            updatePanelLayout(); // Determine initial layout based on screen size
+            setLanguage('en'); // Initialize in English
+            updatePanelLayout();
             updatePreview();
             updateLineNumbers();
         };
-
-        // Handle screen resize to switch between mobile and desktop layout modes
         window.addEventListener('resize', updatePanelLayout);
     </script>
-
 </body>
 </html>
