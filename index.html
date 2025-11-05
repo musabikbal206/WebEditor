@@ -3,11 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Code Sandbox</title>
+    <title>Modern Live Code Sandbox</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Feather Icons -->
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        // Enhanced color palette with gradients and improved contrast
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent': {
+                            100: '#ccfbf1',
+                            300: '#5eead4',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        },
+                        'dark-bg': '#0f172a',
+                        'dark-surface': '#1e293b',
+                        'dark-text': '#f1f5f9',
+                        'light-bg': '#f8fafc',
+                        'light-surface': '#ffffff',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         /* Set font to Inter for clean look */
         body { font-family: 'Inter', sans-serif; }
@@ -16,178 +37,222 @@
         .h-screen-minus-header {
             height: calc(100vh - 4rem); /* Subtract header height */
         }
-        
-        /* Custom scrollbar for aesthetics */
-        textarea::-webkit-scrollbar {
-            width: 8px;
+
+        /* Custom scrollbar for aesthetics (Dark Mode) */
+        .editor-textarea::-webkit-scrollbar {
+            height: 8px; /* For horizontal scrollbar */
+            width: 8px; /* For vertical scrollbar */
         }
-        textarea::-webkit-scrollbar-thumb {
-            background-color: #6366f1;
+        .editor-textarea::-webkit-scrollbar-thumb {
+            background-color: #475569; /* slate-600 */
             border-radius: 10px;
         }
-        textarea::-webkit-scrollbar-track {
-            background-color: #f1f1f1;
+        .editor-textarea::-webkit-scrollbar-track {
+            background-color: #0f172a; /* dark-bg */
         }
-        
-        /* Resizer styles */
+
+        /* Resizer styles with improved visibility */
         .resizer {
-            width: 8px;
-            background: linear-gradient(to right, #8b5cf6, #6366f1);
+            width: 10px;
+            background: linear-gradient(to right, #0d9488, #0ea5e9);
             cursor: col-resize;
             transition: all 0.2s;
+            z-index: 10;
+            box-shadow: 0 0 8px rgba(13, 148, 136, 0.4);
         }
         .resizer:hover, .resizer.resizing {
-            background: linear-gradient(to right, #7c3aed, #4f46e5);
+            background: linear-gradient(to right, #06b6d4, #0ea5e9);
             width: 12px;
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
         }
-        
-        /* Line numbers styling */
+
+        /* Enhanced line numbers styling */
         .line-numbers {
             position: absolute;
             left: 0;
             top: 0;
-            width: 40px;
+            width: 50px;
             height: 100%;
-            background-color: #1f2937;
-            color: #9ca3af;
+            background-color: #0f172a; /* dark-bg */
+            color: #64748b; /* slate-500 */
             text-align: right;
-            padding: 1rem 0.5rem;
-            font-family: monospace;
+            padding: 1rem 0.6rem;
+            font-family: 'Fira Code', monospace;
             font-size: 0.875rem;
             line-height: 1.5;
             overflow: hidden;
-            border-right: 1px solid #374151;
+            border-right: 1px solid #334155; /* slate-700 */
             user-select: none;
+            transition: color 0.2s;
         }
-        
+        .line-numbers:hover {
+            color: #94a3b8; /* slate-400 */
+        }
+
         .editor-wrapper {
             position: relative;
-            height: 100%;
+            height: calc(100% - 2.5rem); /* Account for h2 margin */
         }
-        
+
         .editor-textarea {
-            padding-left: 50px !important;
+            padding-left: 60px !important; /* Make room for line numbers */
+            overflow: scroll;
+            font-family: 'Fira Code', monospace;
         }
         
-        /* Modern button styles */
-        .modern-btn {
-            background: linear-gradient(to right, #8b5cf6, #6366f1);
+        /* Smooth transitions for UI elements */
+        .smooth-transition {
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2), 0 2px 4px -1px rgba(99, 102, 241, 0.06);
         }
         
-        .modern-btn:hover {
-            background: linear-gradient(to right, #7c3aed, #4f46e5);
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.1);
-            transform: translateY(-1px);
+        /* Enhanced button styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            box-shadow: 0 4px 6px rgba(13, 148, 136, 0.2);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            box-shadow: 0 6px 8px rgba(13, 148, 136, 0.3);
+            transform: translateY(-2px);
         }
         
-        /* Glass effect for header */
+        /* Glass morphism effect for header */
         .glass-header {
-            backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        /* Modern panel styling */
-        .modern-panel {
-            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        /* Enhanced modal styling */
+        .modal-glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
         }
         
-        /* Preview panel styling */
-        .preview-panel {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        /* Gradient text effect */
+        .gradient-text {
+            background: linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Subtle pulse animation for export button */
+        @keyframes subtle-pulse {
+            0% { box-shadow: 0 4px 6px rgba(13, 148, 136, 0.2); }
+            50% { box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4); }
+            100% { box-shadow: 0 4px 6px rgba(13, 148, 136, 0.2); }
+        }
+        
+        .pulse-effect {
+            animation: subtle-pulse 3s infinite;
         }
     </style>
+    <!-- Add Fira Code font for better code readability -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-indigo-50 to-purple-100">
+<body class="bg-slate-100">
 
-    <!-- Header -->
-    <header class="h-16 glass-header flex items-center justify-between px-4 md:px-8">
-        <div class="flex items-center">
-            <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                <svg class="inline w-6 h-6 mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                </svg>
-                Sandbox
-            </h1>
-            <p class="ml-4 text-gray-600 hidden sm:block text-sm">Edit HTML, CSS & JS in real-time</p>
-        </div>
-        
+    <!-- Enhanced Header with Glass Morphism -->
+    <header class="h-16 glass-header shadow-lg flex items-center justify-between px-4 md:px-8 sticky top-0 z-20">
+        <h1 class="text-2xl font-bold gradient-text flex items-center">
+            <svg class="inline w-7 h-7 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+            </svg>
+            CodeSandbox
+        </h1>
         <div class="flex items-center space-x-4">
-            <button id="export-btn" class="modern-btn px-4 py-2 text-white rounded-lg flex items-center">
-                <i data-feather="download" class="w-4 h-4 mr-2"></i>
-                Export
+            <div class="hidden sm:flex items-center bg-accent-100 text-accent-700 px-3 py-1 rounded-full text-sm font-medium">
+                <span class="w-2 h-2 bg-accent-500 rounded-full mr-2 animate-pulse"></span>
+                Live Preview
+            </div>
+            <button
+                id="export-button"
+                onclick="downloadDocument()"
+                class="px-5 py-2.5 btn-primary text-white text-sm font-semibold rounded-xl smooth-transition pulse-effect flex items-center"
+            >
+                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                Export HTML
             </button>
         </div>
     </header>
 
-    <!-- Main Editor Area -->
+    <!-- Enhanced Main Editor Area -->
     <main class="h-screen-minus-header flex flex-col md:flex-row">
-        <!-- Code Editor Panel -->
-        <div id="editor-panel" class="relative w-1/2 p-4 modern-panel border-r border-gray-700 overflow-hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold text-indigo-300 flex items-center">
-                    <i data-feather="code" class="w-5 h-5 mr-2"></i>
-                    Editor
+        <!-- Enhanced Code Editor Panel (Dark Mode) -->
+        <div id="editor-panel" class="relative w-1/2 p-4 bg-gradient-to-br from-dark-bg to-slate-900 border-r border-slate-700 overflow-hidden">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-lg font-semibold text-accent-300 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                    </svg>
+                    HTML/CSS/JS Editor
                 </h2>
-                <div class="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
-                    HTML/CSS/JS
+                <div class="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded-md">
+                    Lines: <span id="line-count">1</span>
                 </div>
             </div>
             <div class="editor-wrapper">
                 <div id="line-numbers" class="line-numbers">1</div>
                 <textarea
                     id="code-editor"
-                    class="editor-textarea w-full h-full p-4 text-sm text-gray-200 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none transition duration-150 ease-in-out"
+                    class="editor-textarea w-full h-full p-4 text-sm text-dark-text bg-dark-surface border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent resize-none smooth-transition"
                     placeholder="Start typing your HTML, CSS (in <style> tags), and JavaScript (in <script> tags) here..."
+                    wrap="off"
                 >
 <!-- Start editing your website here! -->
-<div class="p-8 bg-white rounded-xl shadow-2xl max-w-sm mx-auto my-4 text-center">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">My First Website</h1>
-    <p class="text-indigo-600">Live preview generated below!</p>
-    <button onclick="alert('Button clicked!')" class="mt-4 px-6 py-2 bg-indigo-500 text-white font-medium rounded-full hover:bg-indigo-700 transition duration-150">
+<div class="p-8 bg-white rounded-2xl shadow-2xl max-w-sm mx-auto my-4 text-center border border-slate-100">
+    <h1 class="text-3xl font-bold text-slate-800 mb-2">My Website</h1>
+    <p class="text-accent-600 font-medium">Live preview generated below!</p>
+    <button onclick="showMessageBox('Button clicked!')" class="mt-4 px-6 py-2.5 btn-primary text-white font-medium rounded-full smooth-transition">
         Click Me
     </button>
 </div>
 
 <style>
-    /* Add CSS styles here */
+    /* Added a smooth transition for the body background */
     body {
         margin: 0;
         padding: 20px;
-        background-color: #f0f4f8;
+        background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%);
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
+        transition: background-color 0.3s ease;
+        font-family: 'Inter', sans-serif;
     }
 </style>
 
 <script>
-    // Add JavaScript here
-    function alert(message) {
-        // Using console.log instead of the blocked alert()
-        console.log("Custom alert message:", message);
+    // Custom message box function instead of alert()
+    function showMessageBox(message) {
+        console.log("Custom message:", message);
+        // You would typically implement a custom modal UI here.
+        // For now, we'll log to the console as a safe alternative.
     }
 </script>
                 </textarea>
             </div>
         </div>
 
-        <!-- Resizer -->
+        <!-- Enhanced Resizer -->
         <div id="resizer" class="resizer"></div>
 
-        <!-- Live Preview Panel -->
-        <div id="preview-panel" class="relative w-1/2 p-0 preview-panel shadow-inner overflow-hidden">
-            <div class="flex justify-between items-center p-4 border-b">
-                <h2 class="text-lg font-semibold text-gray-700 flex items-center">
-                    <i data-feather="eye" class="w-5 h-5 mr-2"></i>
+        <!-- Enhanced Live Preview Panel -->
+        <div id="preview-panel" class="relative w-1/2 p-0 bg-gradient-to-br from-slate-50 to-slate-100 shadow-inner overflow-hidden">
+            <div class="flex justify-between items-center p-4 border-b border-slate-200">
+                <h2 class="text-lg font-semibold text-slate-700 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
                     Live Preview
                 </h2>
-                <div class="text-xs text-gray-500 bg-white px-2 py-1 rounded shadow-sm">
-                    Updates in real-time
+                <div class="text-xs text-slate-500 bg-white px-2 py-1 rounded-md border border-slate-200">
+                    Responsive
                 </div>
             </div>
             <iframe
@@ -198,18 +263,34 @@
         </div>
     </main>
 
+    <!-- Enhanced Custom Modal/Message Box (Hidden by default) -->
+    <div id="message-modal" class="hidden fixed inset-0 modal-glass flex items-center justify-center p-4 z-30">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full transform transition-all duration-300 scale-95 opacity-0 border border-slate-100" id="modal-content">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-accent-100 flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Message</h3>
+            </div>
+            <p id="modal-text" class="text-slate-600 mb-6"></p>
+            <button onclick="closeMessageBox()" class="w-full py-3 btn-primary text-white rounded-xl smooth-transition font-medium">Close</button>
+        </div>
+    </div>
+
     <script type="text/javascript">
-        // Initialize Feather Icons
-        feather.replace();
-        
-        // --- Core Application Logic ---
+        // --- Core Application Logic & Initialization ---
         const codeEditor = document.getElementById('code-editor');
         const previewFrame = document.getElementById('preview-frame');
         const resizer = document.getElementById('resizer');
         const editorPanel = document.getElementById('editor-panel');
         const previewPanel = document.getElementById('preview-panel');
         const lineNumbers = document.getElementById('line-numbers');
-        const exportBtn = document.getElementById('export-btn');
+        const messageModal = document.getElementById('message-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalText = document.getElementById('modal-text');
+        const lineCount = document.getElementById('line-count');
 
         /**
          * Writes the content of the textarea directly into the iframe's document,
@@ -221,7 +302,9 @@
 
             // Using document.write to fully replace the iframe's content
             iframeDoc.open();
-            iframeDoc.write(code);
+            // Prevent the user from using window.alert() in their code
+            const safeCode = code.replace(/alert\(/g, 'showMessageBox(');
+            iframeDoc.write(safeCode);
             iframeDoc.close();
         }
 
@@ -247,98 +330,91 @@
             updateLineNumbers();
         };
 
-        // --- Line Numbers Logic ---
+        // --- Enhanced Line Numbers Logic ---
         function updateLineNumbers() {
+            // Lines are calculated based on newline characters
             const lines = codeEditor.value.split('\n').length;
             let lineNumbersHTML = '';
             
+            // Update line count display
+            lineCount.textContent = lines;
+
             for (let i = 1; i <= lines; i++) {
                 lineNumbersHTML += i + '<br>';
             }
-            
+
             lineNumbers.innerHTML = lineNumbersHTML;
-            
-            // Sync scroll position
+
+            // Sync vertical scroll position only. Horizontal scroll is independent.
             lineNumbers.scrollTop = codeEditor.scrollTop;
         }
 
-        // Sync scrolling of textarea and line numbers
+        // Sync scrolling of textarea and line numbers (Vertical only)
         codeEditor.addEventListener('scroll', function() {
             lineNumbers.scrollTop = codeEditor.scrollTop;
         });
 
-        // Update line numbers when textarea is resized
+        // Update line numbers when textarea is resized or content changes
         codeEditor.addEventListener('mouseup', updateLineNumbers);
         codeEditor.addEventListener('keyup', updateLineNumbers);
 
-        // --- Improved Resizer Logic ---
+        // --- Export Document Function ---
+        function downloadDocument() {
+            const code = codeEditor.value;
+            const blob = new Blob([code], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sandbox_output.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Add a subtle feedback animation
+            const exportBtn = document.getElementById('export-button');
+            exportBtn.classList.remove('pulse-effect');
+            setTimeout(() => {
+                exportBtn.classList.add('pulse-effect');
+            }, 100);
+        }
+
+        // --- Resizer Logic (Touch and Mouse) ---
         let isResizing = false;
         let animationFrameId = null;
 
-        // Mouse down event to start resizing
-        resizer.addEventListener('mousedown', function(e) {
+        function startResize(e) {
             isResizing = true;
             resizer.classList.add('resizing');
             document.body.style.cursor = 'col-resize';
             document.body.style.userSelect = 'none';
             e.preventDefault();
-        });
-
-        // Mouse move event to handle resizing - using requestAnimationFrame for smoother updates
-        function handleResize(e) {
-            if (!isResizing) return;
-            
-            // Cancel any pending animation frame
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-            }
-            
-            // Schedule the resize for the next animation frame
-            animationFrameId = requestAnimationFrame(() => {
-                const containerWidth = document.querySelector('main').offsetWidth;
-                const editorWidth = (e.clientX / containerWidth) * 100;
-                const previewWidth = 100 - editorWidth;
-
-                // Set minimum width constraints (20% each)
-                if (editorWidth >= 20 && previewWidth >= 20) {
-                    editorPanel.style.width = `${editorWidth}%`;
-                    previewPanel.style.width = `${previewWidth}%`;
-                }
-            });
         }
 
-        document.addEventListener('mousemove', handleResize);
-
-        // Mouse up event to stop resizing
-        document.addEventListener('mouseup', function() {
+        function stopResize() {
             if (isResizing) {
                 isResizing = false;
                 resizer.classList.remove('resizing');
                 document.body.style.cursor = '';
                 document.body.style.userSelect = '';
-                
-                // Cancel any pending animation frame
+
                 if (animationFrameId) {
                     cancelAnimationFrame(animationFrameId);
                     animationFrameId = null;
                 }
             }
-        });
+        }
 
-        // Touch events for mobile devices - also improved with requestAnimationFrame
-        function handleTouchResize(e) {
+        function handleResize(clientX) {
             if (!isResizing) return;
-            
-            // Cancel any pending animation frame
+
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
-            
-            // Schedule the resize for the next animation frame
+
             animationFrameId = requestAnimationFrame(() => {
-                const touch = e.touches[0];
                 const containerWidth = document.querySelector('main').offsetWidth;
-                const editorWidth = (touch.clientX / containerWidth) * 100;
+                const editorWidth = (clientX / containerWidth) * 100;
                 const previewWidth = 100 - editorWidth;
 
                 // Set minimum width constraints (20% each)
@@ -349,57 +425,35 @@
             });
         }
 
-        resizer.addEventListener('touchstart', function(e) {
-            isResizing = true;
-            resizer.classList.add('resizing');
-            document.body.style.userSelect = 'none';
-            e.preventDefault();
-        });
+        // Mouse Handlers
+        resizer.addEventListener('mousedown', startResize);
+        document.addEventListener('mousemove', (e) => handleResize(e.clientX));
+        document.addEventListener('mouseup', stopResize);
 
-        document.addEventListener('touchmove', handleTouchResize);
+        // Touch Handlers
+        resizer.addEventListener('touchstart', (e) => startResize(e.touches[0]));
+        document.addEventListener('touchmove', (e) => handleResize(e.touches[0].clientX));
+        document.addEventListener('touchend', stopResize);
 
-        document.addEventListener('touchend', function() {
-            if (isResizing) {
-                isResizing = false;
-                resizer.classList.remove('resizing');
-                document.body.style.userSelect = '';
-                
-                // Cancel any pending animation frame
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                    animationFrameId = null;
-                }
-            }
-        });
-
-        // --- Export Functionality ---
-        exportBtn.addEventListener('click', function() {
-            const code = codeEditor.value;
-            const blob = new Blob([code], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'my-website.html';
-            document.body.appendChild(a);
-            a.click();
-            
-            // Clean up
+        // --- Custom Message Box for Alert() Replacement ---
+        window.showMessageBox = function(message) {
+            modalText.textContent = message;
+            messageModal.classList.remove('hidden');
+            // Trigger animation
             setTimeout(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 100);
-            
-            // Show temporary feedback
-            const originalText = exportBtn.innerHTML;
-            exportBtn.innerHTML = '<i data-feather="check" class="w-4 h-4 mr-2"></i>Exported!';
-            feather.replace();
-            
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        window.closeMessageBox = function() {
+            // Trigger animation out
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
             setTimeout(() => {
-                exportBtn.innerHTML = originalText;
-                feather.replace();
-            }, 2000);
-        });
+                messageModal.classList.add('hidden');
+            }, 300); // Match CSS transition duration
+        }
     </script>
 
 </body>
